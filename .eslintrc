@@ -1,14 +1,29 @@
 {
-  "extends": ["airbnb-base"],
+  "parser": "@babel/eslint-parser",
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "env": {
+    "commonjs": true,
+    "es6": true,
+    "node": true,
+    "browser": false
+  },
+  "parserOptions": {
+    "requireConfigFile": false,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": false
+    },
+    "sourceType": "module"
+  },
+  "globals": {
+    "strapi": true
+  },
   "rules": {
-    "no-shadow": "error",
-    "no-console": "error",
-    "no-restricted-syntax": [
-      "error",
-      {
-        "selector": "CallExpression[callee.object.name='console'][callee.property.name!=/^(error)$/]",
-        "message": "Unexpected property on console object was called"
-      }
-    ]
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "linebreak-style": ["error", "unix"],
+    "no-console": 0,
+    "no-undef": "error",
+    "quotes": ["error", "single"],
+    "semi": ["error", "always"]
   }
 }

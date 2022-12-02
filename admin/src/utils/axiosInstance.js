@@ -1,7 +1,3 @@
-/**
- * axios with a custom config.
- */
-
 import axios from 'axios';
 import { auth } from '@strapi/helper-plugin';
 

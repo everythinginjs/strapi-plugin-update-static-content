@@ -6,7 +6,7 @@
     "name": "update-static-content",
     "description": "A plugin to rebuild your SSG website.",
     "kind": "plugin",
-    "displayName": "Strapi Plugin Update Static Content"
+    "displayName": "Update Static Content"
   },
   "author": {
     "name": "Amir Mahmoudi<amixengineer>"
@@ -21,9 +21,6 @@
     "npm": ">=6.0.0"
   },
   "license": "MIT",
-  "devDependencies": {
-    "eslint": "^8.28.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0"
-  }
+  "devDependencies": {},
+  "dependencies": {}
 }

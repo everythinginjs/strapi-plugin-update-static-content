@@ -1,1 +1,37 @@
-{}
+{
+  "update-static-content.plugin.name": "Update Static Content",
+  "update-static-content.settings.title": "Update Static Content",
+  "update-static-content.permissionMsg": "You do not have permission to access the page.",
+  "update-static-content.settings.pagetitle": "Update Static Content Configuration",
+  "update-static-content.settings.headers.title": "Configuration",
+  "update-static-content.settings.headers.subtitle": "Here you can see your Update Static Content Configuration",
+  "update-static-content.loadingMsg": "Loading....",
+
+  "update-static-content.settings.fields.githubtoken": "Github Personal Access Token",
+  "update-static-content.settings.fields.owner": "Github Owner Account",
+  "update-static-content.settings.fields.repo": "Github Repository",
+  "update-static-content.settings.fields.workflowid": "Workflow Id OR Filename",
+  "update-static-content.settings.fields.branch": "Branch",
+  "update-static-content.settings.fields.roles": "Roles",
+
+  "update-static-content.settings.fields.hint.githubtoken": "Enter your `Github Personal Access Token` if you do not have create one from here",
+  "update-static-content.settings.fields.hint.owner": "Enter your `Github Username (owner of the account)`",
+  "update-static-content.settings.fields.hint.repo": "Enter your `Github Repository`",
+  "update-static-content.settings.fields.hint.workflowid": "Enter your `workflowId` for more info check here",
+  "update-static-content.settings.fields.hint.branch": "Enter the desired `branch`",
+  "update-static-content.settings.fields.hint.roles": "Roles that have access to the plugin",
+
+  "update-static-content.settings.fields.placeholder.githubtoken": "Set `githubToken` in plugin config",
+  "update-static-content.settings.fields.placeholder.owner": "Set `owner` in plugin config",
+  "update-static-content.settings.fields.placeholder.repo": "Set `repo` in plugin config",
+  "update-static-content.settings.fields.placeholder.workflowid": "Set `workflow_id` in plugin config",
+  "update-static-content.settings.fields.placeholder.branch": "Set `branch` in plugin config",
+
+  "update-static-content.plugin.title": "Fing Deploy Page",
+  "update-static-content.plugin.headers.title": "Fing Deploy",
+  "update-static-content.plugin.headers.subtitle": "Deploy Manually and monitor them.",
+  "update-static-content.plugin.buttons.secondary": "Visit",
+  "update-static-content.plugin.buttons.primary": "Trigger",
+  "update-static-content.plugin.missingConfig.message": "Please, setup the following plugin configuration → ",
+  "update-static-content.plugin.missingConfig.button": "Plugin Settings"
+}

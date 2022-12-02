@@ -1,6 +1,6 @@
 import { prefixPluginTranslations } from '@strapi/helper-plugin';
 import pluginPkg from '../../package.json';
-import pluginId from './pluginId';
+import pluginId from '../../utils/pluginId';
 import Initializer from './components/Initializer';
 import PluginIcon from './components/PluginIcon';
 
@@ -16,7 +16,7 @@ export default {
         defaultMessage: name,
       },
       Component: async () => {
-        const component = await import(/* webpackChunkName: "[request]" */ './pages/App');
+        const component = await import(/* webpackChunkName: "[request]" */ './pages/PluginPage');
 
         return component;
       },
@@ -28,6 +28,32 @@ export default {
         // },
       ],
     });
+    const pluginPrefix = `${pluginId}.settings`;
+    app.createSettingSection(
+      {
+        id: pluginPrefix,
+        intlLabel: {
+          id: `${pluginPrefix}.title`,
+          defaultMessage: 'Update Static Content',
+        },
+      },
+      [
+        {
+          id: pluginPrefix,
+          intlLabel: {
+            id: `${pluginPrefix}.subtitle.link`,
+            defaultMessage: 'Configuration',
+          },
+          to: `/settings/${pluginId}`,
+          Component: async () => {
+            const component = await import(
+              /* webpackChunkName: "[update-static-content]" */ './pages/SettingPage'
+            );
+            return component;
+          },
+        },
+      ]
+    );
     app.registerPlugin({
       id: pluginId,
       initializer: Initializer,

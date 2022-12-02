@@ -1,10 +1,12 @@
+const pluginId = require('../../utils/pluginId');
+
 module.exports = [
   {
     method: 'GET',
-    path: '/',
-    handler: 'myController.index',
+    path: '/config',
+    handler: 'config.getPluginConfig',
     config: {
-      policies: [],
+      policies: [`plugin::${pluginId}.checkConfigRoles`],
     },
   },
 ];

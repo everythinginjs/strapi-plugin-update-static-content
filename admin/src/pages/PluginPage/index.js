@@ -5,16 +5,16 @@
  */
 
 import React from 'react';
+import pluginId from '../../../../utils/pluginId';
 // import PropTypes from 'prop-types';
-import pluginId from '../../pluginId';
 
-const HomePage = () => {
+const PluginPage = () => {
   return (
     <div>
-      <h1>{pluginId}&apos;s HomePage</h1>
+      <h1>{pluginId}&apos;s PluginPage</h1>
       <p>Happy coding</p>
     </div>
   );
 };
 
-export default HomePage;
+export default PluginPage;

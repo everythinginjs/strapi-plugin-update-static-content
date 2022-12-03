@@ -4,7 +4,7 @@ import pluginId from '../../utils/pluginId';
 import Initializer from './components/Initializer';
 import PluginIcon from './components/PluginIcon';
 
-const name = pluginPkg.strapi.name;
+const name = pluginPkg.strapi.displayName;
 
 export default {
   register(app) {
@@ -16,7 +16,9 @@ export default {
         defaultMessage: name,
       },
       Component: async () => {
-        const component = await import(/* webpackChunkName: "[request]" */ './pages/PluginPage');
+        const component = await import(
+          /* webpackChunkName: "update-static-content-plugin-[request]" */ './pages/PluginRoute'
+        );
 
         return component;
       },
@@ -34,7 +36,7 @@ export default {
         id: pluginPrefix,
         intlLabel: {
           id: `${pluginPrefix}.title`,
-          defaultMessage: 'Update Static Content',
+          defaultMessage: name,
         },
       },
       [
@@ -47,7 +49,7 @@ export default {
           to: `/settings/${pluginId}`,
           Component: async () => {
             const component = await import(
-              /* webpackChunkName: "[update-static-content]" */ './pages/SettingPage'
+              /* webpackChunkName: "update-static-content-setting-[request]" */ './pages/PluginRoute'
             );
             return component;
           },
@@ -62,7 +64,7 @@ export default {
     });
   },
 
-  bootstrap(app) {},
+  bootstrap() {},
   async registerTrads({ locales }) {
     const importedTrads = await Promise.all(
       locales.map((locale) => {

@@ -19,7 +19,7 @@
     "strapi": true
   },
   "rules": {
-    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "indent": "off",
     "linebreak-style": ["error", "unix"],
     "no-console": 0,
     "no-undef": "error",

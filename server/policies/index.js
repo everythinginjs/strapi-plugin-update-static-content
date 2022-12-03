@@ -1,5 +1,6 @@
 'use strict';
 
+const buildPluginConfig = require('../utils/buildPluginConfig');
 const FALLBACK_ROLES_VALUES = require('../utils/fallbackRoles');
 const getPluginConfig = require('../utils/getPluginConfig');
 const { PolicyError } = require('@strapi/utils').errors;
@@ -21,5 +22,19 @@ module.exports = {
     }
 
     return hasPermission;
+  },
+  validatePluginConfig: (ø1, ø2, { strapi }) => {
+    var pluginConfig = buildPluginConfig(strapi);
+
+    for (const key in pluginConfig) {
+      let value = pluginConfig[key];
+      if (!key || !value) {
+        throw new PolicyError('MISSING_CONFIG', {
+          type: `${key.toLowerCase()}`,
+        });
+      }
+    }
+
+    return true;
   },
 };

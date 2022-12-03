@@ -9,4 +9,15 @@ module.exports = [
       policies: [`plugin::${pluginId}.checkConfigRoles`],
     },
   },
+  {
+    method: 'GET',
+    path: '/github-actions-history',
+    handler: 'githubActions.history',
+    config: {
+      policies: [
+        `plugin::${pluginId}.checkConfigRoles`,
+        `plugin::${pluginId}.validatePluginConfig`,
+      ],
+    },
+  },
 ];

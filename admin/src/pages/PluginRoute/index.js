@@ -9,8 +9,8 @@ const PluginRoute = () => {
   return (
     <div>
       <Switch>
-        <Route path={`/settings/${pluginId}`} component={PluginPage} exact />
-        <Route path={`/plugins/${pluginId}`} component={SettingPage} exact />
+        <Route path={`/settings/${pluginId}`} component={SettingPage} exact />
+        <Route path={`/plugins/${pluginId}`} component={PluginPage} exact />
         <Route component={NotFound} />
       </Switch>
     </div>

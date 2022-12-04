@@ -20,4 +20,15 @@ module.exports = [
       ],
     },
   },
+  {
+    method: 'POST',
+    path: '/github-actions-trigger',
+    handler: 'githubActions.trigger',
+    config: {
+      policies: [
+        `plugin::${pluginId}.checkConfigRoles`,
+        `plugin::${pluginId}.validatePluginConfig`,
+      ],
+    },
+  },
 ];

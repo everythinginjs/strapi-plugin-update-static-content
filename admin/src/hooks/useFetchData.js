@@ -16,8 +16,9 @@ export default function useFetchData({ url, method }) {
         message: err.response.data.error.message,
         type: err.response.data.error.details.type,
       });
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, [setIsLoading, setFetchedData]);
 
   return { fetchedData, isLoading, errors };

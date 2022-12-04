@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import pluginId from '../../../../utils/pluginId';
 import {
   BaseHeaderLayout,
   LinkButton,
   Link,
   Typography,
+  TextButton,
   Button,
   Table,
   Thead,
@@ -13,12 +14,14 @@ import {
   Tr,
   Th,
 } from '@strapi/design-system';
-import { ArrowLeft, Plus, Earth } from '@strapi/icons';
+import { ArrowLeft, Plus, Earth, Refresh } from '@strapi/icons';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import Guard from '../../components/Guard';
 import PageWrapper from '../../components/PageWrapper';
 import useFetchData from '../../hooks/useFetchData';
 import CustomRow from '../../components/CustomRow';
+import axios from '../../utils/axiosInstance';
+import ToastMsg from '../../components/ToastMsg';
 
 const PLUGIN = `${pluginId}.plugin`;
 const THEAD_ITEMS = [
@@ -36,11 +39,53 @@ const PluginPage = () => {
   const PLUGIN_PAGE_HEADER_SUBTITLE = useFormattedLabel(`${PLUGIN}.headers.subtitle`);
   const PLUGIN_PAGE_SECONDARY_ACTION_BUTTON = useFormattedLabel(`${PLUGIN}.buttons.secondary`);
   const PLUGIN_PAGE_PRIMARY_ACTION_BUTTON = useFormattedLabel(`${PLUGIN}.buttons.primary`);
+  const [loadingTriggerButton, setLoadingTriggerButton] = useState(false);
+  const [toastMsg, setToastMsg] = useState({});
+  const [toastToggle, setToastToggle] = useState(false);
+  // const [updateHistoryTable, setUpdateHistoryTable] = useState(false); //TODO
 
   const { errors, fetchedData, isLoading } = useFetchData({
     url: `/${pluginId}/github-actions-history`,
     method: 'GET',
   });
+
+  useEffect(() => {}, [toastToggle]);
+
+  async function triggerGithubActions() {
+    try {
+      setLoadingTriggerButton(true);
+      const res = await axios(`/${pluginId}/github-actions-trigger`, {
+        method: 'POST',
+      });
+      console.log(res);
+      setToastMsg({
+        variant: 'success',
+        title: 'Successfully Triggered',
+        message: 'Your workflow_dispatch event already started to progress.',
+        action: (
+          <TextButton
+            endIcon={<Refresh />}
+            onClick={() => {
+              // setUpdateHistoryTable(true); //TODO
+              setToastToggle(false);
+            }}
+          >
+            Check it out
+          </TextButton>
+        ),
+      });
+      setToastToggle(true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingTriggerButton(false);
+      setToastToggle(false);
+    }
+  }
+
+  function closeToastHandler() {
+    setToastMsg(false);
+  }
 
   return (
     <>
@@ -56,7 +101,13 @@ const PluginPage = () => {
               </Link>
             }
             primaryAction={
-              <Button variant="default" size="L" startIcon={<Plus />}>
+              <Button
+                onClick={triggerGithubActions}
+                variant="default"
+                size="L"
+                loading={loadingTriggerButton}
+                startIcon={<Plus />}
+              >
                 {PLUGIN_PAGE_PRIMARY_ACTION_BUTTON}
               </Button>
             }
@@ -69,6 +120,7 @@ const PluginPage = () => {
         }
         pageTitle={PLUGIN_PAGE_TITLE}
       >
+        {toastToggle && <ToastMsg {...toastMsg} closeToastHandler={closeToastHandler} />}
         <Guard errors={errors}>
           <Table colCount={6} rowCount={21}>
             <Thead>

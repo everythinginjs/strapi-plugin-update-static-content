@@ -5,8 +5,9 @@ export default function useFetchData({ url, method }) {
   var [fetchedData, setFetchedData] = useState({});
   var [errors, setErrors] = useState({});
   var [isLoading, setIsLoading] = useState(true);
-
+  var [refetch, setRefetch] = useState({});
   useEffect(async () => {
+    setIsLoading(true);
     try {
       let response = await axios(url, { method });
       setFetchedData(response.data);
@@ -19,7 +20,7 @@ export default function useFetchData({ url, method }) {
     } finally {
       setIsLoading(false);
     }
-  }, [setIsLoading, setFetchedData]);
+  }, [setIsLoading, setFetchedData, setErrors, refetch]);
 
-  return { fetchedData, isLoading, errors };
+  return { fetchedData, isLoading, errors, setRefetch };
 }

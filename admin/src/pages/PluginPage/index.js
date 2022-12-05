@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import pluginId from '../../../../utils/pluginId';
 import {
   BaseHeaderLayout,
@@ -42,22 +42,18 @@ const PluginPage = () => {
   const [loadingTriggerButton, setLoadingTriggerButton] = useState(false);
   const [toastMsg, setToastMsg] = useState({});
   const [toastToggle, setToastToggle] = useState(false);
-  // const [updateHistoryTable, setUpdateHistoryTable] = useState(false); //TODO
 
-  const { errors, fetchedData, isLoading } = useFetchData({
+  const { errors, fetchedData, isLoading, setRefetch } = useFetchData({
     url: `/${pluginId}/github-actions-history`,
     method: 'GET',
   });
 
-  useEffect(() => {}, [toastToggle]);
-
   async function triggerGithubActions() {
     try {
       setLoadingTriggerButton(true);
-      const res = await axios(`/${pluginId}/github-actions-trigger`, {
+      await axios(`/${pluginId}/github-actions-trigger`, {
         method: 'POST',
       });
-      console.log(res);
       setToastMsg({
         variant: 'success',
         title: 'Successfully Triggered',
@@ -66,7 +62,7 @@ const PluginPage = () => {
           <TextButton
             endIcon={<Refresh />}
             onClick={() => {
-              // setUpdateHistoryTable(true); //TODO
+              setRefetch({});
               setToastToggle(false);
             }}
           >
@@ -76,15 +72,31 @@ const PluginPage = () => {
       });
       setToastToggle(true);
     } catch (error) {
-      console.log(error);
+      //TODO: toast message does not work for Errors
+      if (
+        error.response.data.error?.status === 422 &&
+        error.response.data.error?.name === 'UnprocessableEntityError'
+      ) {
+        setToastMsg({
+          variant: 'danger',
+          title: 'Event Error',
+          message: 'Your workflow_dispatch event is disabled.',
+          action: <Link to="/">See more</Link>,
+        });
+      } else {
+        setToastMsg({
+          variant: 'danger',
+          title: 'Unknown Error',
+          message: 'Something goes wrong try later again.',
+        });
+      }
     } finally {
       setLoadingTriggerButton(false);
-      setToastToggle(false);
     }
   }
 
   function closeToastHandler() {
-    setToastMsg(false);
+    setToastToggle(false);
   }
 
   return (

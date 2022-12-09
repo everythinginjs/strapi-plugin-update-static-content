@@ -33,5 +33,19 @@
   "update-static-content.plugin.buttons.secondary": "Visit",
   "update-static-content.plugin.buttons.primary": "Trigger",
   "update-static-content.plugin.missingConfig.message": "Please, setup the following plugin configuration → ",
-  "update-static-content.plugin.missingConfig.button": "Plugin Settings"
+  "update-static-content.plugin.missingConfig.button": "Plugin Settings",
+
+  "update-static-content.plugin.toast.success.title": "Successfully Triggered",
+  "update-static-content.plugin.toast.success.description": "Your workflow_dispatch event already started to progress.",
+
+  "update-static-content.plugin.toast.failure.unknown.title": "Unknown Error",
+  "update-static-content.plugin.toast.failure.unknown.description": "Something goes wrong try later",
+
+  "update-static-content.plugin.toast.failure.unprocessableEntity.title": "Event Error",
+  "update-static-content.plugin.toast.failure.unprocessableEntity.description": "Your workflow_dispatch event is disabled.",
+
+  "update-static-content.button.seeMore": "See More",
+  "update-static-content.button.refresh": "Refresh",
+  "update-static-content.button.back": "Back",
+  "update-static-content.button.details": "Details"
 }

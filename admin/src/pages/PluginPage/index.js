@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import pluginId from '../../../../utils/pluginId';
 import {
   BaseHeaderLayout,
   LinkButton,
@@ -15,6 +14,7 @@ import {
   Th,
 } from '@strapi/design-system';
 import { ArrowLeft, Plus, Earth, Refresh } from '@strapi/icons';
+import pluginId from '../../../../utils/pluginId';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import Guard from '../../components/Guard';
 import PageWrapper from '../../components/PageWrapper';
@@ -34,20 +34,38 @@ const THEAD_ITEMS = [
 ];
 
 const PluginPage = () => {
-  const PLUGIN_PAGE_TITLE = useFormattedLabel(`${PLUGIN}.title`);
-  const PLUGIN_PAGE_HEADER_TITLE = useFormattedLabel(`${PLUGIN}.headers.title`);
-  const PLUGIN_PAGE_HEADER_SUBTITLE = useFormattedLabel(`${PLUGIN}.headers.subtitle`);
-  const PLUGIN_PAGE_SECONDARY_ACTION_BUTTON = useFormattedLabel(`${PLUGIN}.buttons.secondary`);
-  const PLUGIN_PAGE_PRIMARY_ACTION_BUTTON = useFormattedLabel(`${PLUGIN}.buttons.primary`);
+  // Hooks
   const [loadingTriggerButton, setLoadingTriggerButton] = useState(false);
   const [toastMsg, setToastMsg] = useState({});
   const [toastToggle, setToastToggle] = useState(false);
-
   const { errors, fetchedData, isLoading, setRefetch } = useFetchData({
     url: `/${pluginId}/github-actions-history`,
     method: 'GET',
   });
 
+  // Translations
+  const TITLE = useFormattedLabel(`${PLUGIN}.title`);
+  const HEADER_TITLE = useFormattedLabel(`${PLUGIN}.headers.title`);
+  const HEADER_SUBTITLE = useFormattedLabel(`${PLUGIN}.headers.subtitle`);
+  const SECONDARY_ACTION_BUTTON = useFormattedLabel(`${PLUGIN}.buttons.secondary`);
+  const PRIMARY_ACTION_BUTTON = useFormattedLabel(`${PLUGIN}.buttons.primary`);
+  const TOAST_SUCCESS_TITLE = useFormattedLabel(`${PLUGIN}.toast.success.title`);
+  const TOAST_SUCCESS_DESCRIPTION = useFormattedLabel(`${PLUGIN}.toast.success.description`);
+  const TOAST_FAILURE_UNKNOWN_TITLE = useFormattedLabel(`${PLUGIN}.toast.failure.unknown.title`);
+  const TOAST_FAILURE_UNKNOWN_DESCRIPTION = useFormattedLabel(
+    `${PLUGIN}.toast.failure.unknown.description`
+  );
+  const TOAST_FAILURE_UNPROCESSABLE_TITLE = useFormattedLabel(
+    `${PLUGIN}.toast.failure.unprocessableEntity.title`
+  );
+  const TOAST_FAILURE_UNPROCESSABLE_DESCRIPTION = useFormattedLabel(
+    `${PLUGIN}.toast.failure.unprocessableEntity.description`
+  );
+  const SEE_MORE_BUTTON = useFormattedLabel(`${pluginId}.button.seeMore`);
+  const REFRESH_BUTTON = useFormattedLabel(`${pluginId}.button.refresh`);
+  const Back_BUTTON = useFormattedLabel(`${pluginId}.button.back`);
+
+  // Callbacks
   async function triggerGithubActions() {
     try {
       setLoadingTriggerButton(true);
@@ -56,8 +74,8 @@ const PluginPage = () => {
       });
       setToastMsg({
         variant: 'success',
-        title: 'Successfully Triggered',
-        message: 'Your workflow_dispatch event already started to progress.',
+        title: TOAST_SUCCESS_TITLE,
+        message: TOAST_SUCCESS_DESCRIPTION,
         action: (
           <TextButton
             endIcon={<Refresh />}
@@ -66,30 +84,38 @@ const PluginPage = () => {
               setToastToggle(false);
             }}
           >
-            Check it out
+            {REFRESH_BUTTON}
           </TextButton>
         ),
       });
       setToastToggle(true);
     } catch (error) {
-      //TODO: toast message does not work for Errors
+      console.log(error);
       if (
         error.response.data.error?.status === 422 &&
         error.response.data.error?.name === 'UnprocessableEntityError'
       ) {
         setToastMsg({
           variant: 'danger',
-          title: 'Event Error',
-          message: 'Your workflow_dispatch event is disabled.',
-          action: <Link to="/">See more</Link>,
+          title: TOAST_FAILURE_UNPROCESSABLE_TITLE,
+          message: TOAST_FAILURE_UNPROCESSABLE_DESCRIPTION,
+          action: (
+            <Link
+              isExternal
+              href="https://docs.github.com/en/actions/managing-workflow-runs/disabling-and-enabling-a-workflow"
+            >
+              {SEE_MORE_BUTTON}
+            </Link>
+          ),
         });
       } else {
         setToastMsg({
           variant: 'danger',
-          title: 'Unknown Error',
-          message: 'Something goes wrong try later again.',
+          title: TOAST_FAILURE_UNKNOWN_TITLE,
+          message: TOAST_FAILURE_UNKNOWN_DESCRIPTION,
         });
       }
+      setToastToggle(true);
     } finally {
       setLoadingTriggerButton(false);
     }
@@ -105,11 +131,11 @@ const PluginPage = () => {
         isLoading={isLoading}
         baseHeaderLayout={
           <BaseHeaderLayout
-            title={PLUGIN_PAGE_HEADER_TITLE}
-            subtitle={PLUGIN_PAGE_HEADER_SUBTITLE}
+            title={HEADER_TITLE}
+            subtitle={HEADER_SUBTITLE}
             navigationAction={
               <Link to="/" startIcon={<ArrowLeft />}>
-                Back
+                {Back_BUTTON}
               </Link>
             }
             primaryAction={
@@ -120,17 +146,17 @@ const PluginPage = () => {
                 loading={loadingTriggerButton}
                 startIcon={<Plus />}
               >
-                {PLUGIN_PAGE_PRIMARY_ACTION_BUTTON}
+                {PRIMARY_ACTION_BUTTON}
               </Button>
             }
             secondaryAction={
               <LinkButton href="https://vahoora.com" variant="secondary" startIcon={<Earth />}>
-                {PLUGIN_PAGE_SECONDARY_ACTION_BUTTON}
+                {SECONDARY_ACTION_BUTTON}
               </LinkButton>
             }
           />
         }
-        pageTitle={PLUGIN_PAGE_TITLE}
+        pageTitle={TITLE}
       >
         {toastToggle && <ToastMsg {...toastMsg} closeToastHandler={closeToastHandler} />}
         <Guard errors={errors}>

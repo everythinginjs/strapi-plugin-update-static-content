@@ -46,7 +46,30 @@ async function trigger() {
   }
 }
 
+async function getLogs(jobId) {
+  const config = buildPluginConfig(strapi);
+  try {
+    const res = await axios.get(
+      `https://api.github.com/repos/${config.owner}/${config.repo}/actions/runs/${jobId}/logs`,
+      {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          Authorization: `token ${config.githubToken}`,
+        },
+      }
+    );
+    return res.request.res.responseUrl;
+  } catch (err) {
+    console.log(err);
+    return {
+      status: err.response.status,
+      statusText: err.response.statusText,
+    };
+  }
+}
+
 module.exports = {
   history,
   trigger,
+  getLogs,
 };

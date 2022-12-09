@@ -11,11 +11,11 @@ const SETTING = `${pluginId}.settings`;
 
 const SettingPage = () => {
   // Hooks
-  var { errors, isLoading, fetchedData } = useFetchData({
+  const { errors, isLoading, fetchedData } = useFetchData({
     url: `/${pluginId}/config`,
     method: 'GET',
   });
-  var { branch, githubToken, owner, repo, roles, workflowId } = fetchedData;
+  const { branch, githubToken, owner, repo, roles, workflowId } = fetchedData;
 
   // Translations
   const PAGE_TITLE = useFormattedLabel(`${SETTING}.pagetitle`);

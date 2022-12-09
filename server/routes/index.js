@@ -31,4 +31,15 @@ module.exports = [
       ],
     },
   },
+  {
+    method: 'GET',
+    path: '/github-actions-jobs-log',
+    handler: 'githubActions.log',
+    config: {
+      policies: [
+        `plugin::${pluginId}.checkConfigRoles`,
+        `plugin::${pluginId}.validatePluginConfig`,
+      ],
+    },
+  },
 ];

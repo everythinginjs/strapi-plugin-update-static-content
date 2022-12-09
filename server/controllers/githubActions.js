@@ -1,5 +1,5 @@
 const pluginId = require('../../utils/pluginId');
-
+// TODO fix variable declarations
 module.exports = {
   history: async (ctx) => {
     const response = await strapi.plugin(pluginId).service('githubActions').history();
@@ -11,5 +11,10 @@ module.exports = {
       return ctx.unprocessableEntity('Unprocessable Entity');
     }
     ctx.body = response.data;
+  },
+  log: async (ctx) => {
+    const { jobId } = ctx.request.query;
+    const logURL = await strapi.plugin(pluginId).service('githubActions').getLogs(jobId);
+    ctx.body = logURL;
   },
 };

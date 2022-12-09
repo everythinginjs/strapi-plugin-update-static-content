@@ -9,5 +9,6 @@ export default function Label(status) {
     textColor: 'neutral100',
     backgroundColor: isSuccess ? 'success500' : isFailure ? 'danger500' : 'neutral800',
   };
+
   return <Badge {...BadgeStyles}>{status}</Badge>;
 }

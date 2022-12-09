@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   BaseHeaderLayout,
-  LinkButton,
   Link,
   Typography,
   TextButton,
@@ -13,7 +12,7 @@ import {
   Tr,
   Th,
 } from '@strapi/design-system';
-import { ArrowLeft, Plus, Earth, Refresh } from '@strapi/icons';
+import { ArrowLeft, Plus, Refresh } from '@strapi/icons';
 import pluginId from '../../../../utils/pluginId';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import Guard from '../../components/Guard';
@@ -33,7 +32,7 @@ const THEAD_ITEMS = [
   <VisuallyHidden key="actions" />,
 ];
 
-const PluginPage = () => {
+export default function PluginPage() {
   // Hooks
   const [loadingTriggerButton, setLoadingTriggerButton] = useState(false);
   const [toastMsg, setToastMsg] = useState({});
@@ -47,7 +46,6 @@ const PluginPage = () => {
   const TITLE = useFormattedLabel(`${PLUGIN}.title`);
   const HEADER_TITLE = useFormattedLabel(`${PLUGIN}.headers.title`);
   const HEADER_SUBTITLE = useFormattedLabel(`${PLUGIN}.headers.subtitle`);
-  const SECONDARY_ACTION_BUTTON = useFormattedLabel(`${PLUGIN}.buttons.secondary`);
   const PRIMARY_ACTION_BUTTON = useFormattedLabel(`${PLUGIN}.buttons.primary`);
   const TOAST_SUCCESS_TITLE = useFormattedLabel(`${PLUGIN}.toast.success.title`);
   const TOAST_SUCCESS_DESCRIPTION = useFormattedLabel(`${PLUGIN}.toast.success.description`);
@@ -121,10 +119,6 @@ const PluginPage = () => {
     }
   }
 
-  function closeToastHandler() {
-    setToastToggle(false);
-  }
-
   return (
     <>
       <PageWrapper
@@ -149,16 +143,11 @@ const PluginPage = () => {
                 {PRIMARY_ACTION_BUTTON}
               </Button>
             }
-            secondaryAction={
-              <LinkButton href="https://vahoora.com" variant="secondary" startIcon={<Earth />}>
-                {SECONDARY_ACTION_BUTTON}
-              </LinkButton>
-            }
           />
         }
         pageTitle={TITLE}
       >
-        {toastToggle && <ToastMsg {...toastMsg} closeToastHandler={closeToastHandler} />}
+        {toastToggle && <ToastMsg {...toastMsg} closeToastHandler={() => setToastToggle(false)} />}
         <Guard errors={errors}>
           <Table colCount={6} rowCount={21}>
             <Thead>
@@ -186,6 +175,10 @@ const PluginPage = () => {
                 }) => {
                   return (
                     <CustomRow
+                      toastMsg={toastMsg}
+                      setToastMsg={setToastMsg}
+                      toastToggle={toastToggle}
+                      setToastToggle={setToastToggle}
                       key={id}
                       id={id}
                       conclusion={conclusion}
@@ -207,6 +200,4 @@ const PluginPage = () => {
       </PageWrapper>
     </>
   );
-};
-
-export default PluginPage;
+}

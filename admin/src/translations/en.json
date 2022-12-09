@@ -29,7 +29,7 @@
 
   "update-static-content.plugin.title": "Update Static Content Page",
   "update-static-content.plugin.headers.title": "Update Static Content",
-  "update-static-content.plugin.headers.subtitle": "Rebuild and deploy Manually and monitor them.",
+  "update-static-content.plugin.headers.subtitle": "Rebuild and deploy your site manually",
   "update-static-content.plugin.buttons.secondary": "Visit",
   "update-static-content.plugin.buttons.primary": "Trigger",
   "update-static-content.plugin.missingConfig.message": "Please, setup the following plugin configuration → ",

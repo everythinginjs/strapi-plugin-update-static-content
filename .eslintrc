@@ -16,6 +16,7 @@
     "sourceType": "module"
   },
   "globals": {
+    "window": true,
     "strapi": true
   },
   "rules": {

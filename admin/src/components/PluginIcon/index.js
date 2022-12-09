@@ -1,12 +1,6 @@
-/**
- *
- * PluginIcon
- *
- */
-
 import React from 'react';
-import Puzzle from '@strapi/icons/Puzzle';
+import CustomPluginIcon from '../CustomIcon';
 
-const PluginIcon = () => <Puzzle />;
+const PluginIcon = () => <CustomPluginIcon />;
 
 export default PluginIcon;

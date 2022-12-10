@@ -1,3 +1,89 @@
-# Strapi plugin strapi-plugin-update-static-content
+# Update Static Content - Strapi v4
 
-A quick description of strapi-plugin-update-static-content.
+<p align="center">Update your statically generated site with github actions (more coming on the way).</p>
+
+---
+
+<p align="center" width="100%">
+  <img alt="strapi plugin update static content logo" src="/public/logo/strapi-plugin-update-static-content.png"/>
+</p>
+
+## Plugin Previews
+
+Plugin Settings
+
+<p align="center" width="100%">
+  <img alt="strapi plugin update static content configuration" src="/public/previews/plugin-config.png"/>
+</p>
+
+Plugin Page
+
+<p align="center" width="100%">
+  <img alt="strapi plugin update static content plugin" src="/public/previews/plugin-page.png"/>
+</p>
+
+---
+
+## Features
+
+- Workflow History
+- Config Page
+- Downloading Logs
+- Roles to access the plugin
+
+## Installation
+
+```bash
+  yarn add strapi-plugin-update-static-content
+  OR
+  npm i strapi-plugin-update-static-content
+```
+
+## Plugin Configuration
+
+1. add plugin configs inside `strapiProject/config/plugins.js`
+
+```javascript
+module.exports = ({ env }) => ({
+  'update-static-content': {
+    enabled: true,
+    config: {
+      githubToken: env('GITHUB_TOKEN'), // accessing personal github token from env file
+      owner: 'everythinginjs', // owner of the repo
+      repo: 'vahoora', // name of the repo
+      workflowId: '40807041', // workflowId OR filename
+      branch: 'main', // branch name
+      roles: ['strapi-super-admin'], // roles to access the plugin, by omitting roles any user can access the plugin
+    },
+  },
+});
+```
+
+2. create a file in the root of you project `.github/workflows/deploy.yml` it should be something like below
+
+```yml
+name: Fing Deployment # a name for your workflow
+on:
+  push: # triggers on push event to the repo
+    branches: [main]
+  workflow_dispatch: # must be included in your .yml file for manually triggering event
+defaults:
+  run:
+    working-directory: ./gatsbyJS # in case of monorepo project, choose the subfolder
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: install fing-cli and deploy
+        env:
+          TOKEN: ${{ secrets.FING_TOKEN }}
+        run: | # write your shell scripts for deploying or building based on your host provider
+          npm install -g @fingcloud/cli
+          fing --access-token "${TOKEN}" up --app vahoora-gatsby --dispatch
+```
+
+## Roadmap
+
+- Cancel workflow manually.

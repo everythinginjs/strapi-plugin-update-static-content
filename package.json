@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-update-static-content",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A plugin to rebuild your SSG website.",
   "strapi": {
     "name": "update-static-content",

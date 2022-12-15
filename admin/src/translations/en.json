@@ -1,7 +1,9 @@
 {
   "update-static-content.plugin.name": "Update Static Content",
   "update-static-content.settings.title": "Update Static Content",
-  "update-static-content.permissionMsg": "You do not have permission to access the page.",
+  "update-static-content.permission.guard": "You do not have permission to access the page.",
+  "update-static-content.permission.toast.title": "Access denied",
+  "update-static-content.permission.toast.message": "You do NOT have permission to do this action.",
   "update-static-content.settings.pagetitle": "Update Static Content Configuration",
   "update-static-content.settings.headers.title": "Configuration",
   "update-static-content.settings.headers.subtitle": "Here you can see your Update Static Content Configuration",
@@ -17,7 +19,7 @@
   "update-static-content.settings.fields.hint.githubtoken": "Enter your `Github Personal Access Token` if you do not have create one from here",
   "update-static-content.settings.fields.hint.owner": "Enter your `Github Username (owner of the account)`",
   "update-static-content.settings.fields.hint.repo": "Enter your `Github Repository`",
-  "update-static-content.settings.fields.hint.workflowid": "Enter your `workflowId` for more info check here",
+  "update-static-content.settings.fields.hint.workflowid": "Enter your `workflowId` or `filename`",
   "update-static-content.settings.fields.hint.branch": "Enter the desired `branch`",
   "update-static-content.settings.fields.hint.roles": "Roles that have access to the plugin",
 

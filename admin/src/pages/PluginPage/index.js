@@ -37,6 +37,7 @@ export default function PluginPage() {
   const [loadingTriggerButton, setLoadingTriggerButton] = useState(false);
   const [toastMsg, setToastMsg] = useState({});
   const [toastToggle, setToastToggle] = useState(false);
+
   const { errors, fetchedData, isLoading, setRefetch } = useFetchData({
     url: `/${pluginId}/github-actions-history`,
     method: 'GET',
@@ -59,6 +60,8 @@ export default function PluginPage() {
   const TOAST_FAILURE_UNPROCESSABLE_DESCRIPTION = useFormattedLabel(
     `${PLUGIN}.toast.failure.unprocessableEntity.description`
   );
+  const TOAST_PERMISSION_DENIED_MSG = useFormattedLabel(`${pluginId}.permission.toast.message`);
+  const TOAST_PERMISSION_DENIED_TITLE = useFormattedLabel(`${pluginId}.permission.toast.title`);
   const SEE_MORE_BUTTON = useFormattedLabel(`${pluginId}.button.seeMore`);
   const REFRESH_BUTTON = useFormattedLabel(`${pluginId}.button.refresh`);
   const Back_BUTTON = useFormattedLabel(`${pluginId}.button.back`);
@@ -88,7 +91,7 @@ export default function PluginPage() {
       });
       setToastToggle(true);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (
         error.response.data.error?.status === 422 &&
         error.response.data.error?.name === 'UnprocessableEntityError'
@@ -106,6 +109,15 @@ export default function PluginPage() {
             </Link>
           ),
         });
+      } else if (
+        error.response.data.error?.status === 403 &&
+        error.response.data.error?.name === 'PolicyError'
+      ) {
+        setToastMsg({
+          variant: 'danger',
+          title: TOAST_PERMISSION_DENIED_TITLE,
+          message: TOAST_PERMISSION_DENIED_MSG,
+        });
       } else {
         setToastMsg({
           variant: 'danger',
@@ -119,6 +131,8 @@ export default function PluginPage() {
     }
   }
 
+  const isAccessDenied =
+    errors.message === 'ACCESS_DENIED' && errors.type === 'ROLES_AND_PERMISSIONS';
   return (
     <>
       <PageWrapper
@@ -137,6 +151,7 @@ export default function PluginPage() {
                 onClick={triggerGithubActions}
                 variant="default"
                 size="L"
+                disabled={isAccessDenied ? true : false}
                 loading={loadingTriggerButton}
                 startIcon={<Plus />}
               >

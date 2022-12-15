@@ -9,7 +9,6 @@ import axios from '../../utils/axiosInstance';
 export default function CustomRow({
   id,
   conclusion,
-  status,
   name,
   run_number,
   run_started_at,
@@ -17,14 +16,15 @@ export default function CustomRow({
   updated_at,
   created_at,
 }) {
-  const [disabledButton, setDisabledButton] = useState(false);
+  const isThereAConclusion = Boolean(conclusion);
+  const [disabledLogsButton, setDisabledLogsButton] = useState(isThereAConclusion ? false : true);
   const msDiffResult = differenceInMilliseconds(new Date(updated_at), new Date(run_started_at));
   const mins = Math.floor(msDiffResult / 1000 / 60);
   const secs = (msDiffResult / 1000) % 60;
   const creationDate = formatRelative(new Date(created_at), new Date());
 
   async function logsHandler(id) {
-    setDisabledButton(true);
+    setDisabledLogsButton(true);
     try {
       let logsUrl = await axios({
         method: 'get',
@@ -37,7 +37,7 @@ export default function CustomRow({
     } catch (err) {
       console.error(err);
     } finally {
-      setDisabledButton(false);
+      setDisabledLogsButton(false);
     }
   }
 
@@ -48,7 +48,7 @@ export default function CustomRow({
         <Td>{name}</Td>
         <Td>{conclusion ? Label(conclusion) : '-'}</Td>
         <Td>{creationDate}</Td>
-        {status === 'in_progress' ? (
+        {!isThereAConclusion ? (
           <Td>in progress</Td>
         ) : (
           <Td>{`${mins ? mins + 'm' : ''} ${secs}s`}</Td>
@@ -57,7 +57,7 @@ export default function CustomRow({
           <IconButtonGroup>
             <Tooltip description="logs">
               <IconButton
-                disabled={disabledButton}
+                disabled={disabledLogsButton}
                 aria-label="logs"
                 onClick={() => logsHandler(id)}
                 icon={<Eye />}
@@ -78,7 +78,6 @@ export default function CustomRow({
 CustomRow.propTypes = {
   id: PropTypes.number,
   conclusion: PropTypes.string,
-  status: PropTypes.string,
   name: PropTypes.string,
   run_number: PropTypes.number,
   run_started_at: PropTypes.string,

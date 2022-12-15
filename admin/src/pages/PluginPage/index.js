@@ -164,7 +164,6 @@ export default function PluginPage() {
                 ({
                   id,
                   conclusion,
-                  status,
                   name,
                   run_number,
                   run_started_at,
@@ -182,7 +181,6 @@ export default function PluginPage() {
                       key={id}
                       id={id}
                       conclusion={conclusion}
-                      status={status}
                       name={name}
                       run_number={run_number}
                       run_started_at={run_started_at}

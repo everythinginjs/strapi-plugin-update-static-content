@@ -5,7 +5,7 @@
 ---
 
 <p align="center" width="100%">
-  <img alt="strapi plugin update static content logo" src="/public/logo/strapi-plugin-update-static-content.png"/>
+  <img alt="strapi plugin update static content logo" src="https://raw.githubusercontent.com/everythinginjs/strapi-plugin-update-static-content/main/public/logo/strapi-plugin-update-static-content.png"/>
 </p>
 
 ## Plugin Previews
@@ -13,13 +13,13 @@
 Plugin Settings
 
 <p align="center" width="100%">
-  <img alt="strapi plugin update static content configuration" src="/public/previews/plugin-config.png"/>
+  <img alt="strapi plugin update static content configuration" src="https://raw.githubusercontent.com/everythinginjs/strapi-plugin-update-static-content/main/public/previews/plugin-config.png"/>
 </p>
 
 Plugin Page
 
 <p align="center" width="100%">
-  <img alt="strapi plugin update static content plugin" src="/public/previews/plugin-page.png"/>
+  <img alt="strapi plugin update static content plugin" src="https://raw.githubusercontent.com/everythinginjs/strapi-plugin-update-static-content/main/public/previews/plugin-page.png"/>
 </p>
 
 ---
@@ -41,7 +41,7 @@ Plugin Page
 
 ## Plugin Configuration
 
-1. add plugin configs inside `strapiProject/config/plugins.js`
+1. Add plugin configs inside `strapiProject/config/plugins.js`
 
 ```javascript
 module.exports = ({ env }) => ({
@@ -59,17 +59,18 @@ module.exports = ({ env }) => ({
 });
 ```
 
-2. create a file in the root of you project `.github/workflows/deploy.yml` it should be something like below
+2. Create a file in the root of your project `.github/workflows/deploy.yml` like below. In this example we are using fing cloud
 
 ```yml
 name: Fing Deployment # a name for your workflow
-on:
-  push: # triggers on push event to the repo
+
+on: # trigger on push event and main branch to the repo
+  push:
     branches: [main]
   workflow_dispatch: # must be included in your .yml file for manually triggering event
-defaults:
+defaults: # in case of monorepo project you can use `defauls` and choose the subfolder
   run:
-    working-directory: ./gatsbyJS # in case of monorepo project, choose the subfolder
+    working-directory: ./gatsbyJS
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -77,7 +78,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: install fing-cli and deploy
-        env:
+        env: # set the cloud provider token to the secrets on github and use it on run
           TOKEN: ${{ secrets.FING_TOKEN }}
         run: | # write your shell scripts for deploying or building based on your host provider
           npm install -g @fingcloud/cli
@@ -87,3 +88,8 @@ jobs:
 ## Roadmap
 
 - Cancel workflow manually.
+- Better documentation.
+
+## Special Thanks
+
+[Reza from Fing](https://github.com/r6m)

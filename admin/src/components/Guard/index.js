@@ -7,13 +7,14 @@ import pluginId from '../../../../utils/pluginId';
 
 const ICON_SIZE = 100;
 const PLUGIN = `${pluginId}.plugin`;
+
 export default function Guard({ errors, children }) {
   if (errors?.message === 'ACCESS_DENIED' && errors?.type === 'ROLES_AND_PERMISSIONS') {
-    const PERMITTED_ROLES = useFormattedLabel(`${pluginId}.permissionMsg`);
+    const PERMISSION_DENIED_MESSGAE = useFormattedLabel(`${pluginId}.guard`);
 
     return (
       <EmptyStateLayout
-        content={PERMITTED_ROLES}
+        content={PERMISSION_DENIED_MESSGAE}
         icon={<EmptyPermissions width={ICON_SIZE} height={ICON_SIZE} />}
       />
     );

@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-update-static-content",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An strapi plugin to rebuild and deploy your SSG website via Github Actions.",
   "strapi": {
     "name": "update-static-content",
@@ -26,9 +26,9 @@
     "react-intl": "6.2.1"
   },
   "devDependencies": {
-    "eslint": "8.28.0",
     "@babel/eslint-parser": "7.19.1",
     "@babel/preset-react": "7.18.6",
+    "eslint": "8.28.0",
     "eslint-plugin-react": "7.31.11"
   }
 }

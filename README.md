@@ -39,6 +39,8 @@ Plugin Page
   npm i strapi-plugin-update-static-content
 ```
 
+**NOTE**: Do not forget `yarn build` after plugin installation.
+
 ## Plugin Configuration
 
 1. Add plugin configs inside `strapiProject/config/plugins.js`

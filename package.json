@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-update-static-content",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An strapi plugin to rebuild and deploy your SSG website via Github Actions.",
   "strapi": {
     "name": "update-static-content",

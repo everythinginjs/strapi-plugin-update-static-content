@@ -19,8 +19,8 @@
   "update-static-content.settings.fields.hint.githubtoken": "Enter your `Github Personal Access Token` if you do not have create one from here",
   "update-static-content.settings.fields.hint.owner": "Enter your `Github Username (owner of the account)`",
   "update-static-content.settings.fields.hint.repo": "Enter your `Github Repository`",
-  "update-static-content.settings.fields.hint.workflowid": "Enter your `workflowId` for more info check here",
-  "update-static-content.settings.fields.hint.branch": "Enter the desired `branch`",
+  "update-static-content.settings.fields.hint.workflowid": "Enter your `workflowId` or `workflow filename`",
+  "update-static-content.settings.fields.hint.branch": "Enter your `branch` name",
   "update-static-content.settings.fields.hint.roles": "Roles that have access to the plugin",
 
   "update-static-content.settings.fields.placeholder.githubtoken": "Set `githubToken` in plugin config",

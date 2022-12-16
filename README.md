@@ -5,7 +5,7 @@
 ---
 
 <p align="center" width="100%">
-  <img alt="strapi plugin update static content logo" src="https://raw.githubusercontent.com/everythinginjs/strapi-plugin-update-static-content/main/public/logo/strapi-plugin-update-static-content.png"/>
+  <img alt="strapi plugin update static content logo" src="https://raw.githubusercontent.com/everythinginjs/strapi-plugin-update-static-content/main/public/logo/300x300.png"/>
 </p>
 
 ## Plugin Previews

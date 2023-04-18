@@ -24,7 +24,6 @@ import CustomRow from '../../components/CustomRow';
 import axios from '../../utils/axiosInstance';
 import ToastMsg from '../../components/ToastMsg';
 
-const PLUGIN = `${pluginId}.plugin`;
 const THEAD_ITEMS = [
   'Run Number',
   'Workflow Name',
@@ -52,27 +51,27 @@ const PluginPage = () => {
   });
 
   // Translations
-  const TITLE = useFormattedLabel(`${PLUGIN}.title`);
-  const HEADER_TITLE = useFormattedLabel(`${PLUGIN}.headers.title`);
-  const HEADER_SUBTITLE = useFormattedLabel(`${PLUGIN}.headers.subtitle`);
-  const PRIMARY_ACTION_BUTTON = useFormattedLabel(`${PLUGIN}.buttons.primary`);
-  const TOAST_SUCCESS_TITLE = useFormattedLabel(`${PLUGIN}.toast.success.title`);
-  const TOAST_SUCCESS_DESCRIPTION = useFormattedLabel(`${PLUGIN}.toast.success.description`);
-  const TOAST_FAILURE_UNKNOWN_TITLE = useFormattedLabel(`${PLUGIN}.toast.failure.unknown.title`);
+  const TITLE = useFormattedLabel('plugin.title');
+  const HEADER_TITLE = useFormattedLabel('plugin.headers.title');
+  const HEADER_SUBTITLE = useFormattedLabel('plugin.headers.subtitle');
+  const PRIMARY_ACTION_BUTTON = useFormattedLabel('plugin.buttons.primary');
+  const TOAST_SUCCESS_TITLE = useFormattedLabel('plugin.toast.success.title');
+  const TOAST_SUCCESS_DESCRIPTION = useFormattedLabel('plugin.toast.success.description');
+  const TOAST_FAILURE_UNKNOWN_TITLE = useFormattedLabel('plugin.toast.failure.unknown.title');
   const TOAST_FAILURE_UNKNOWN_DESCRIPTION = useFormattedLabel(
-    `${PLUGIN}.toast.failure.unknown.description`
+    'plugin.toast.failure.unknown.description'
   );
   const TOAST_FAILURE_UNPROCESSABLE_TITLE = useFormattedLabel(
-    `${PLUGIN}.toast.failure.unprocessableEntity.title`
+    'plugin.toast.failure.unprocessableEntity.title'
   );
   const TOAST_FAILURE_UNPROCESSABLE_DESCRIPTION = useFormattedLabel(
-    `${PLUGIN}.toast.failure.unprocessableEntity.description`
+    'plugin.toast.failure.unprocessableEntity.description'
   );
-  const TOAST_PERMISSION_DENIED_MSG = useFormattedLabel(`${pluginId}.permission.toast.message`);
-  const TOAST_PERMISSION_DENIED_TITLE = useFormattedLabel(`${pluginId}.permission.toast.title`);
-  const SEE_MORE_BUTTON = useFormattedLabel(`${pluginId}.button.seeMore`);
-  const REFRESH_BUTTON = useFormattedLabel(`${pluginId}.button.refresh`);
-  const Back_BUTTON = useFormattedLabel(`${pluginId}.button.back`);
+  const TOAST_PERMISSION_DENIED_MSG = useFormattedLabel('permission.toast.message');
+  const TOAST_PERMISSION_DENIED_TITLE = useFormattedLabel('permission.toast.title');
+  const SEE_MORE_BUTTON = useFormattedLabel('button.seeMore');
+  const REFRESH_BUTTON = useFormattedLabel('button.refresh');
+  const BACK_BUTTON = useFormattedLabel('button.back');
 
   // Callbacks
   async function triggerGithubActions() {
@@ -151,7 +150,7 @@ const PluginPage = () => {
             subtitle={HEADER_SUBTITLE}
             navigationAction={
               <Link to="/" startIcon={<ArrowLeft />}>
-                {Back_BUTTON}
+                {BACK_BUTTON}
               </Link>
             }
             primaryAction={
@@ -221,6 +220,6 @@ const PluginPage = () => {
       </PageWrapper>
     </>
   );
-}
+};
 
 export default ProtectedPage;

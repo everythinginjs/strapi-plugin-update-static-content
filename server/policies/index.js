@@ -15,13 +15,13 @@ module.exports = {
       hasPermission = configRoles.some((configRole) => {
         return configRole == adminRole.code;
       });
+      
+      if (hasPermission){
+        return hasPermission;
+      }
     }
 
-    if (!hasPermission) {
-      throw new PolicyError('ACCESS_DENIED', { type: 'ROLES_AND_PERMISSIONS' });
-    }
-
-    return hasPermission;
+    throw new PolicyError('ACCESS_DENIED', { type: 'ROLES_AND_PERMISSIONS' });
   },
   validatePluginConfig: (ø1, ø2, { strapi }) => {
     const pluginConfig = buildPluginConfig(strapi);

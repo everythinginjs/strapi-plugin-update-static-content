@@ -6,7 +6,15 @@ module.exports = [
     path: '/config',
     handler: 'config.getPluginConfig',
     config: {
-      policies: [`plugin::${pluginId}.checkConfigRoles`],
+      policies: [
+        'admin::isAuthenticatedAdmin',
+        {
+          name: 'admin::hasPermissions',
+          config: {
+            actions: [`plugin::${pluginId}.settings`],
+          },
+        },
+      ],
     },
   },
   {
@@ -15,7 +23,13 @@ module.exports = [
     handler: 'githubActions.history',
     config: {
       policies: [
-        `plugin::${pluginId}.checkConfigRoles`,
+        'admin::isAuthenticatedAdmin',
+        {
+          name: 'admin::hasPermissions',
+          config: {
+            actions: [`plugin::${pluginId}.trigger`],
+          },
+        },
         `plugin::${pluginId}.validatePluginConfig`,
       ],
     },
@@ -26,7 +40,13 @@ module.exports = [
     handler: 'githubActions.trigger',
     config: {
       policies: [
-        `plugin::${pluginId}.checkConfigRoles`,
+        'admin::isAuthenticatedAdmin',
+        {
+          name: 'admin::hasPermissions',
+          config: {
+            actions: [`plugin::${pluginId}.trigger`],
+          },
+        },
         `plugin::${pluginId}.validatePluginConfig`,
       ],
     },
@@ -37,7 +57,13 @@ module.exports = [
     handler: 'githubActions.log',
     config: {
       policies: [
-        `plugin::${pluginId}.checkConfigRoles`,
+        'admin::isAuthenticatedAdmin',
+        {
+          name: 'admin::hasPermissions',
+          config: {
+            actions: [`plugin::${pluginId}.trigger`],
+          },
+        },
         `plugin::${pluginId}.validatePluginConfig`,
       ],
     },

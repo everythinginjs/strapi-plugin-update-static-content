@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import pluginPermissions from '../../permissions';
 import {
   BaseHeaderLayout,
   Link,
@@ -12,6 +13,7 @@ import {
   Tr,
   Th,
 } from '@strapi/design-system';
+import { CheckPagePermissions } from '@strapi/helper-plugin';
 import { ArrowLeft, Plus, Refresh } from '@strapi/icons';
 import pluginId from '../../../../utils/pluginId';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
@@ -32,7 +34,13 @@ const THEAD_ITEMS = [
   <VisuallyHidden key="actions" />,
 ];
 
-export default function PluginPage() {
+const ProtectedPage = () => (
+  <CheckPagePermissions permissions={pluginPermissions.trigger}>
+    <PluginPage />
+  </CheckPagePermissions>
+);
+
+const PluginPage = () => {
   // Hooks
   const [loadingTriggerButton, setLoadingTriggerButton] = useState(false);
   const [toastMsg, setToastMsg] = useState({});
@@ -214,3 +222,5 @@ export default function PluginPage() {
     </>
   );
 }
+
+export default ProtectedPage;

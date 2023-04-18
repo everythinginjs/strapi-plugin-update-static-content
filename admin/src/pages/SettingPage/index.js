@@ -1,6 +1,8 @@
 import React from 'react';
 import pluginId from '../../../../utils/pluginId';
-import { BaseHeaderLayout, Stack, Link, Typography, Option, Select } from '@strapi/design-system';
+import pluginPermissions from '../../permissions';
+import { CheckPagePermissions } from '@strapi/helper-plugin';
+import { BaseHeaderLayout, Stack, Link, Typography } from '@strapi/design-system';
 import useFetchData from '../../hooks/useFetchData';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import Guard from '../../components/Guard';
@@ -9,13 +11,19 @@ import PageWrapper from '../../components/PageWrapper';
 
 const SETTING = `${pluginId}.settings`;
 
+const ProtectedPage = () => (
+  <CheckPagePermissions permissions={pluginPermissions.settings}>
+    <SettingPage />
+  </CheckPagePermissions>
+);
+
 const SettingPage = () => {
   // Hooks
   const { errors, isLoading, fetchedData } = useFetchData({
     url: `/${pluginId}/config`,
     method: 'GET',
   });
-  const { branch, githubToken, owner, repo, roles, workflowId } = fetchedData;
+  const { branch, githubToken, owner, repo, workflowId } = fetchedData;
 
   // Translations
   const PAGE_TITLE = useFormattedLabel(`${SETTING}.pagetitle`);
@@ -106,38 +114,10 @@ const SettingPage = () => {
             required
             HintMessage={<Typography variant="omega">{HINT_BRANCH}</Typography>}
           />
-          <Select
-            label={ROLES}
-            name="roles"
-            value={roles}
-            multi
-            withTags
-            disabled
-            required
-            hint={
-              <Typography variant="omega">
-                {HINT_ROLES}{' '}
-                <Link
-                  href="https://docs.strapi.io/user-docs/latest/users-roles-permissions/configuring-administrator-roles.html"
-                  isExternal
-                >
-                  {BUTTON_DETAILS}
-                </Link>
-              </Typography>
-            }
-          >
-            {roles?.map((role) => {
-              return (
-                <Option key={role} value={role?.replaceAll(' ', '-')}>
-                  {role}
-                </Option>
-              );
-            })}
-          </Select>
         </Stack>
       </Guard>
     </PageWrapper>
   );
 };
 
-export default SettingPage;
+export default ProtectedPage;

@@ -2,7 +2,6 @@
 
 const protectedValue = require('./protectedValue');
 const getPluginConfig = require('./getPluginConfig');
-const FALLBACK_ROLES_VALUES = require('./fallbackRoles');
 
 function buildPluginConfig(strapi, isValueProtected = false) {
   const getPluginConfigByKey = getPluginConfig(strapi);
@@ -15,7 +14,6 @@ function buildPluginConfig(strapi, isValueProtected = false) {
     repo: getPluginConfigByKey('repo')?.trim(),
     workflowId: getPluginConfigByKey('workflowId'),
     branch: getPluginConfigByKey('branch')?.trim(),
-    roles: getPluginConfigByKey('roles', FALLBACK_ROLES_VALUES),
   };
 }
 

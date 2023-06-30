@@ -30,6 +30,7 @@ Plugin Page
 - Config Page
 - Downloading Logs
 - Roles to access the plugin
+- Strapi Permissions in v1.0.7
 
 ## Installation
 
@@ -53,11 +54,12 @@ module.exports = ({ env }) => ({
       repo: 'vahoora', // name of the repo
       workflowId: '40807041', // workflowId OR filename
       branch: 'main', // branch name
-      roles: ['strapi-super-admin'], // roles to access the plugin, by omitting roles any user can access the plugin
     },
   },
 });
 ```
+
+NOTE: add `roles` property (roles: ['strapi-super-admin', 'strapi-editor', 'strapi-author']) if you are using the plugin **lesser than v1.0.7** since above that version it is handled by Strapi Permissions.
 
 2. Create a file in the root of your project `.github/workflows/deploy.yml` like below. In this example we are using fing cloud
 

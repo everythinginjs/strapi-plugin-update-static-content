@@ -1,13 +1,19 @@
 import React from 'react';
 import pluginId from '../../../../utils/pluginId';
-import { BaseHeaderLayout, Stack, Link, Typography, Option, Select } from '@strapi/design-system';
+import pluginPermissions from '../../permissions';
+import { CheckPagePermissions } from '@strapi/helper-plugin';
+import { BaseHeaderLayout, Stack, Link, Typography } from '@strapi/design-system';
 import useFetchData from '../../hooks/useFetchData';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import Guard from '../../components/Guard';
 import TextField from '../../components/TextField';
 import PageWrapper from '../../components/PageWrapper';
 
-const SETTING = `${pluginId}.settings`;
+const ProtectedPage = () => (
+  <CheckPagePermissions permissions={pluginPermissions.settings}>
+    <SettingPage />
+  </CheckPagePermissions>
+);
 
 const SettingPage = () => {
   // Hooks
@@ -15,33 +21,31 @@ const SettingPage = () => {
     url: `/${pluginId}/config`,
     method: 'GET',
   });
-  const { branch, githubToken, owner, repo, roles, workflowId } = fetchedData;
+  const { branch, githubToken, owner, repo, workflowId } = fetchedData;
 
   // Translations
-  const PAGE_TITLE = useFormattedLabel(`${SETTING}.pagetitle`);
-  const HEADER_TITLE = useFormattedLabel(`${SETTING}.headers.title`);
-  const HEADER_SUBTITLE = useFormattedLabel(`${SETTING}.headers.subtitle`);
+  const PAGE_TITLE = useFormattedLabel('settings.pagetitle');
+  const HEADER_TITLE = useFormattedLabel('settings.headers.title');
+  const HEADER_SUBTITLE = useFormattedLabel('settings.headers.subtitle');
 
-  const GITHUB_TOKEN = useFormattedLabel(`${SETTING}.fields.githubtoken`);
-  const REPO = useFormattedLabel(`${SETTING}.fields.repo`);
-  const WORKFLOWID = useFormattedLabel(`${SETTING}.fields.workflowid`);
-  const OWNER = useFormattedLabel(`${SETTING}.fields.owner`);
-  const BRANCH = useFormattedLabel(`${SETTING}.fields.branch`);
-  const ROLES = useFormattedLabel(`${SETTING}.fields.roles`);
+  const GITHUB_TOKEN = useFormattedLabel('settings.fields.githubtoken');
+  const REPO = useFormattedLabel('settings.fields.repo');
+  const WORKFLOWID = useFormattedLabel('settings.fields.workflowid');
+  const OWNER = useFormattedLabel('settings.fields.owner');
+  const BRANCH = useFormattedLabel('settings.fields.branch');
 
-  const HINT_GITHUB_TOKEN = useFormattedLabel(`${SETTING}.fields.hint.githubtoken`);
-  const HINT_OWNER = useFormattedLabel(`${SETTING}.fields.hint.owner`);
-  const HINT_REPO = useFormattedLabel(`${SETTING}.fields.hint.repo`);
-  const HINT_WORKFLOWID = useFormattedLabel(`${SETTING}.fields.hint.workflowid`);
-  const HINT_BRANCH = useFormattedLabel(`${SETTING}.fields.hint.branch`);
-  const HINT_ROLES = useFormattedLabel(`${SETTING}.fields.hint.roles`);
+  const HINT_GITHUB_TOKEN = useFormattedLabel('settings.fields.hint.githubtoken');
+  const HINT_OWNER = useFormattedLabel('settings.fields.hint.owner');
+  const HINT_REPO = useFormattedLabel('settings.fields.hint.repo');
+  const HINT_WORKFLOWID = useFormattedLabel('settings.fields.hint.workflowid');
+  const HINT_BRANCH = useFormattedLabel('settings.fields.hint.branch');
 
-  const PLACEHOLDER_GITHUB_TOKEN = useFormattedLabel(`${SETTING}.fields.placeholder.githubtoken`);
-  const PLACEHOLDER_OWNER = useFormattedLabel(`${SETTING}.fields.placeholder.owner`);
-  const PLACEHOLDER_REPO = useFormattedLabel(`${SETTING}.fields.placeholder.repo`);
-  const PLACEHOLDER_WORKFLOWID = useFormattedLabel(`${SETTING}.fields.placeholder.workflowid`);
-  const PLACEHOLDER_BRANCH = useFormattedLabel(`${SETTING}.fields.placeholder.branch`);
-  const BUTTON_DETAILS = useFormattedLabel(`${pluginId}.button.details`);
+  const PLACEHOLDER_GITHUB_TOKEN = useFormattedLabel('settings.fields.placeholder.githubtoken');
+  const PLACEHOLDER_OWNER = useFormattedLabel('settings.fields.placeholder.owner');
+  const PLACEHOLDER_REPO = useFormattedLabel('settings.fields.placeholder.repo');
+  const PLACEHOLDER_WORKFLOWID = useFormattedLabel('settings.fields.placeholder.workflowid');
+  const PLACEHOLDER_BRANCH = useFormattedLabel('settings.fields.placeholder.branch');
+  const BUTTON_DETAILS = useFormattedLabel('button.details');
 
   return (
     <PageWrapper
@@ -106,38 +110,10 @@ const SettingPage = () => {
             required
             HintMessage={<Typography variant="omega">{HINT_BRANCH}</Typography>}
           />
-          <Select
-            label={ROLES}
-            name="roles"
-            value={roles}
-            multi
-            withTags
-            disabled
-            required
-            hint={
-              <Typography variant="omega">
-                {HINT_ROLES}{' '}
-                <Link
-                  href="https://docs.strapi.io/user-docs/latest/users-roles-permissions/configuring-administrator-roles.html"
-                  isExternal
-                >
-                  {BUTTON_DETAILS}
-                </Link>
-              </Typography>
-            }
-          >
-            {roles?.map((role) => {
-              return (
-                <Option key={role} value={role?.replaceAll(' ', '-')}>
-                  {role}
-                </Option>
-              );
-            })}
-          </Select>
         </Stack>
       </Guard>
     </PageWrapper>
   );
 };
 
-export default SettingPage;
+export default ProtectedPage;

@@ -3,13 +3,12 @@ import { SettingsPageTitle } from '@strapi/helper-plugin';
 import { Box, Flex, Loader } from '@strapi/design-system';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import PropTypes from 'prop-types';
-import pluginId from '../../../../utils/pluginId';
 
 const PADDING_X = 10;
 const PADDING_Y = 2;
 
 function PageLoading() {
-  const LOADING_MESSAGE = useFormattedLabel(`${pluginId}.loadingMsg`);
+  const LOADING_MESSAGE = useFormattedLabel('loadingMsg');
   return (
     <Flex justifyContent="center">
       <Loader>{LOADING_MESSAGE}</Loader>

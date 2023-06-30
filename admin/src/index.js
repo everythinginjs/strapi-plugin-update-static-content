@@ -1,6 +1,7 @@
 import { prefixPluginTranslations } from '@strapi/helper-plugin';
 import pluginPkg from '../../package.json';
 import pluginId from '../../utils/pluginId';
+import pluginPermissions from './permissions';
 import Initializer from './components/Initializer';
 import PluginIcon from './components/PluginIcon';
 
@@ -22,13 +23,7 @@ export default {
 
         return component;
       },
-      permissions: [
-        // Uncomment to set the permissions of the plugin here
-        // {
-        //   action: '', // the action name should be plugin::plugin-name.actionType
-        //   subject: null,
-        // },
-      ],
+      permissions: pluginPermissions.trigger,
     });
     const pluginPrefix = `${pluginId}.settings`;
     app.createSettingSection(
@@ -53,6 +48,7 @@ export default {
             );
             return component;
           },
+          permissions: pluginPermissions.settings,
         },
       ]
     );

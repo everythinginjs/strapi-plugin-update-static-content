@@ -1,6 +1,9 @@
 {
-  "parser": "@babel/eslint-parser",
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "plugins": ["prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+],
   "env": {
     "commonjs": true,
     "es6": true,
@@ -11,8 +14,9 @@
     "requireConfigFile": false,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
-      "jsx": false
+      "jsx": true
     },
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
   "globals": {
@@ -20,11 +24,12 @@
     "strapi": true
   },
   "rules": {
+    "prettier/prettier": "error",
     "indent": "off",
     "linebreak-style": ["error", "unix"],
     "no-console": 0,
     "no-undef": "error",
-    "quotes": ["error", "single"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
     "semi": ["error", "always"]
   }
 }

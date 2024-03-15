@@ -19,7 +19,7 @@ import pluginId from '../../../../utils/pluginId';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import Guard from '../../components/Guard';
 import PageWrapper from '../../components/PageWrapper';
-import useFetchData from '../../hooks/useFetchData';
+import useFetch from '../../hooks/useFetch';
 import CustomRow from '../../components/CustomRow';
 import axios from '../../utils/axiosInstance';
 import ToastMsg from '../../components/ToastMsg';
@@ -45,7 +45,7 @@ const PluginPage = () => {
   const [toastMsg, setToastMsg] = useState({});
   const [toastToggle, setToastToggle] = useState(false);
 
-  const { errors, fetchedData, isLoading, setRefetch } = useFetchData({
+  const { errors, fetchedData, isLoading, setRefetch } = useFetch({
     url: `/${pluginId}/github-actions-history`,
     method: 'GET',
   });

@@ -3,7 +3,7 @@ import pluginId from '../../../../utils/pluginId';
 import pluginPermissions from '../../permissions';
 import { CheckPagePermissions } from '@strapi/helper-plugin';
 import { BaseHeaderLayout, Stack, Link, Typography } from '@strapi/design-system';
-import useFetchData from '../../hooks/useFetchData';
+import useFetch from '../../hooks/useFetch';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import Guard from '../../components/Guard';
 import TextField from '../../components/TextField';
@@ -17,7 +17,7 @@ const ProtectedPage = () => (
 
 const SettingPage = () => {
   // Hooks
-  const { errors, isLoading, fetchedData } = useFetchData({
+  const { errors, isLoading, fetchedData } = useFetch({
     url: `/${pluginId}/config`,
     method: 'GET',
   });

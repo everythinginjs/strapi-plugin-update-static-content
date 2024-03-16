@@ -1,8 +1,5 @@
-# Node
 node_modules
-
-# OS X files
 DS_Store
-
-# folders
 .vscode
+yarn-error.log
+dist

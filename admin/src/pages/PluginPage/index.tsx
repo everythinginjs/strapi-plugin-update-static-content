@@ -31,11 +31,13 @@ const THEAD_ITEMS = [
   <VisuallyHidden key="actions" />,
 ];
 
-const ProtectedPage = () => (
-  <CheckPagePermissions permissions={pluginPermissions.trigger}>
-    <PluginPage />
-  </CheckPagePermissions>
-);
+export default function ProtectedPage() {
+  return (
+    <CheckPagePermissions permissions={pluginPermissions.trigger}>
+      <PluginPage />
+    </CheckPagePermissions>
+  );
+}
 
 type Data = {
   workflow_runs?: {
@@ -58,7 +60,7 @@ type Toast = {
   action?: React.ReactNode;
 };
 
-const PluginPage = () => {
+function PluginPage() {
   // Hooks
   const [loadingTriggerButton, setLoadingTriggerButton] = useState(false);
   const [toastMsg, setToastMsg] = useState<Toast>({} as Toast);
@@ -221,6 +223,4 @@ const PluginPage = () => {
       </Table>
     </PageWrapper>
   );
-};
-
-export default ProtectedPage;
+}

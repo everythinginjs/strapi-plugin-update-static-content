@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-update-static-content",
-  "version": "2.0.0",
+  "version": "2.0.5",
   "description": "An strapi plugin to rebuild and deploy your SSG website via Github Actions.",
   "strapi": {
     "name": "update-static-content",
@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.server.json",
-    "develop": "tsc -p tsconfig.server.json -w"
+    "develop": "tsc -p tsconfig.server.json -w",
+    "prepare": "npm run build"
   },
   "homepage": "https://github.com/everythinginjs/strapi-plugin-update-static-content#update-static-content---strapi-v4",
   "bugs": {
@@ -36,20 +37,21 @@
     "npm": ">=6.0.0"
   },
   "dependencies": {
+    "date-fns": "2.29.3",
+    "react-intl": "6.2.1",
     "@strapi/design-system": "1.6.3",
     "@strapi/helper-plugin": "4.6.0",
-    "@strapi/icons": "1.6.3",
-    "date-fns": "2.29.3",
-    "react-intl": "6.2.1"
+    "@strapi/icons": "1.6.3"
   },
   "devDependencies": {
+    "@strapi/typescript-utils": "4.6.0",
+    "@types/react": "17.0.53",
+    "@types/react-dom": "18.2.22",
     "@babel/eslint-parser": "7.21.3",
     "@babel/preset-react": "7.18.6",
-    "@strapi/typescript-utils": "4.6.0",
-    "@types/react": "18.2.66",
-    "@types/react-dom": "18.2.22",
     "@types/react-router-dom": "5.3.3",
     "@types/styled-components": "5.1.26",
+    "npm-install-peers": "1.2.2",
     "eslint": "8.38.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-prettier": "4.2.1",
@@ -65,7 +67,8 @@
     "react": "17.0.0 || 18.0.0",
     "react-dom": "17.0.0 || 18.0.0",
     "react-router-dom": "5.2.0",
-    "styled-components": "5.2.1"
+    "styled-components": "5.2.1",
+    "@strapi/strapi": "4.20.5"
   },
   "keywords": [
     "strapi",

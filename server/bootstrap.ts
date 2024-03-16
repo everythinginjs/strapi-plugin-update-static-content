@@ -1,5 +1,5 @@
-import pluginName from '../admin/src/pluginId';
 import type { Strapi } from '@strapi/strapi';
+import pluginName from '../admin/src/pluginId';
 
 export default async ({ strapi }: { strapi: Strapi }) => {
   if (typeof strapi.admin == 'undefined') return;

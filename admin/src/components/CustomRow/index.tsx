@@ -4,7 +4,7 @@ import { differenceInMilliseconds, formatRelative } from 'date-fns';
 import { Eye, ExternalLink } from '@strapi/icons';
 import Label from '../Label';
 import pluginId from '../../pluginId';
-import { request } from '@strapi/helper-plugin';
+import { useFetchClient } from '@strapi/helper-plugin';
 
 type Props = {
   id: number;
@@ -27,6 +27,7 @@ export default function CustomRow({
   updated_at,
   created_at,
 }: Props) {
+  const { get } = useFetchClient();
   const isThereAConclusion = Boolean(conclusion);
   const [disabledLogsButton, setDisabledLogsButton] = useState(isThereAConclusion ? false : true);
   const msDiffResult = differenceInMilliseconds(new Date(updated_at), new Date(run_started_at));
@@ -37,9 +38,7 @@ export default function CustomRow({
   async function logsHandler(id: number) {
     setDisabledLogsButton(true);
     try {
-      let logsUrl = await request({
-        method: 'get',
-        url: `/${pluginId}/github-actions-jobs-log`,
+      let logsUrl = await get(`/${pluginId}/github-actions-jobs-log`, {
         params: {
           jobId: id,
         },

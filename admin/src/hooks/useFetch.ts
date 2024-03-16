@@ -18,7 +18,7 @@ export default function useFetch<TData>(url: string): [TData, boolean, () => voi
     (async function fetch() {
       setIsLoading(true);
       try {
-        const response = await get(url, { method: 'GET', signal });
+        const response = await get(url, { signal });
         setData(response.data);
       } catch (err: any) {
         const response = JSON.parse(JSON.stringify(err)).response;

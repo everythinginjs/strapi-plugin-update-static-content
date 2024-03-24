@@ -49,5 +49,6 @@
   "button.seeMore": "See More",
   "button.refresh": "Refresh",
   "button.back": "Back",
-  "button.details": "Details"
+  "button.details": "Details",
+  "confirm.message": "Do you confirm to trigger this action ?"
 }

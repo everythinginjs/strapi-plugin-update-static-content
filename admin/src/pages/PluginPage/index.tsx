@@ -90,9 +90,14 @@ function PluginPage() {
   const SEE_MORE_BUTTON = useFormattedLabel('button.seeMore');
   const REFRESH_BUTTON = useFormattedLabel('button.refresh');
   const BACK_BUTTON = useFormattedLabel('button.back');
+  const CONFIRM_MSG = useFormattedLabel('confirm.message');
 
   // Callbacks
   async function triggerGithubActions() {
+    const isConfirmed = confirm(CONFIRM_MSG);
+
+    if (!isConfirmed) return;
+
     try {
       setLoadingTriggerButton(true);
       await post(`/${pluginId}/github-actions-trigger`);

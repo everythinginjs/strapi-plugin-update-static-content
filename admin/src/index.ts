@@ -18,11 +18,11 @@ export default {
         defaultMessage: name,
       },
       Component: async () => {
-        const component = await import('./pages/PluginRoute');
+        const component = await import('./pages/App');
 
         return component;
       },
-      permissions: pluginPermissions.trigger,
+      //permissions: [pluginPermissions.trigger],
     });
     const pluginPrefix = `${pluginId}.settings`;
     app.createSettingSection(
@@ -42,10 +42,10 @@ export default {
           },
           to: `/settings/${pluginId}`,
           Component: async () => {
-            const component = await import('./pages/PluginRoute');
+            const component = await import('./pages/App');
             return component;
           },
-          permissions: pluginPermissions.settings,
+        //permissions: [pluginPermissions.settings],
         },
       ]
     );

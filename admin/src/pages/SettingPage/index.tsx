@@ -1,31 +1,26 @@
 import { BaseHeaderLayout, Link, Stack, Typography } from '@strapi/design-system';
 import { CheckPagePermissions } from '@strapi/helper-plugin';
-import React from 'react';
 import PageWrapper from '../../components/PageWrapper';
 import TextField from '../../components/TextField';
 import useFetch from '../../hooks/useFetch';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import pluginPermissions from '../../permissions';
 import pluginId from '../../pluginId';
+import Config from '../../../../types/Config';
 
-const ProtectedPage = () => (
-  <CheckPagePermissions permissions={pluginPermissions.settings}>
-    <SettingPage />
-  </CheckPagePermissions>
-);
+export default function ProtectedPage(){
+  return (
+    <CheckPagePermissions permissions={pluginPermissions.settings}>
+      <SettingPage />
+    </CheckPagePermissions>
+  );
+} 
 
-type Data = {
-  branch: string;
-  githubToken: string;
-  owner: string;
-  repo: string;
-  workflowId: string;
-};
 
 const SettingPage = () => {
   // Hooks
-  const [data, isLoading] = useFetch<Data>(`/${pluginId}/config`);
-  const { branch, githubToken, owner, repo, workflowId } = data;
+  const [data, isLoading] = useFetch<Config>(`/${pluginId}/config`);
+  const { branch, githubToken, githubAccount, repo, workflow } = data;
 
   // Translations
   const PAGE_TITLE = useFormattedLabel('settings.pagetitle');
@@ -82,8 +77,8 @@ const SettingPage = () => {
           type="text"
           label={OWNER}
           aria-label={OWNER}
-          name="owner"
-          value={owner || PLACEHOLDER_OWNER}
+          name="githubAccount"
+          value={githubAccount || PLACEHOLDER_OWNER}
           disabled
           required
           HintMessage={<Typography variant="omega">{HINT_OWNER}</Typography>}
@@ -103,7 +98,7 @@ const SettingPage = () => {
           label={WORKFLOWID}
           aria-label={WORKFLOWID}
           name="workflow_id"
-          value={workflowId || PLACEHOLDER_WORKFLOWID}
+          value={workflow || PLACEHOLDER_WORKFLOWID}
           disabled
           required
           HintMessage={<Typography variant="omega">{HINT_WORKFLOWID}</Typography>}
@@ -123,4 +118,3 @@ const SettingPage = () => {
   );
 };
 
-export default ProtectedPage;

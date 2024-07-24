@@ -18,6 +18,22 @@ export default [
     },
   },
   {
+    method: 'POST',
+    path: '/config',
+    handler: 'config.updatePluginConfig',
+    config: {
+      policies: [
+        'admin::isAuthenticatedAdmin',
+        {
+          name: 'admin::hasPermissions',
+          config: {
+            actions: [`plugin::${pluginId}.settings`],
+          },
+        },
+      ],
+    },
+  },
+  {
     method: 'GET',
     path: '/github-actions-history',
     handler: 'githubActions.history',
@@ -30,7 +46,6 @@ export default [
             actions: [`plugin::${pluginId}.trigger`],
           },
         },
-        `plugin::${pluginId}.validatePluginConfig`,
       ],
     },
   },
@@ -47,7 +62,6 @@ export default [
             actions: [`plugin::${pluginId}.trigger`],
           },
         },
-        `plugin::${pluginId}.validatePluginConfig`,
       ],
     },
   },
@@ -64,8 +78,8 @@ export default [
             actions: [`plugin::${pluginId}.trigger`],
           },
         },
-        `plugin::${pluginId}.validatePluginConfig`,
       ],
     },
   },
+  
 ];

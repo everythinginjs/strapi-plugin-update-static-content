@@ -16,7 +16,7 @@ export default ({ strapi }: { strapi: Strapi }) => ({
   updatePluginConfig : async (ctx) => {
     try {
       const { body } = ctx.request;
-      // console.log(data);
+      console.log(body);
 
       // Sanitize input data first
       // validateConfig(body);

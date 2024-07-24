@@ -1,7 +1,7 @@
 import { BaseHeaderLayout, Link, Stack, Typography } from '@strapi/design-system';
-import { CheckPagePermissions } from '@strapi/helper-plugin';
+import { CheckPagePermissions, useFetchClient } from '@strapi/helper-plugin';
 import PageWrapper from '../../components/PageWrapper';
-import TextField from '../../components/TextField';
+import { TextInput } from '@strapi/design-system';
 import useFetch from '../../hooks/useFetch';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import pluginPermissions from '../../permissions';
@@ -16,11 +16,11 @@ export default function ProtectedPage(){
   );
 } 
 
-
 const SettingPage = () => {
   // Hooks
   const [data, isLoading] = useFetch<Config>(`/${pluginId}/config`);
   const { branch, githubToken, githubAccount, repo, workflow } = data;
+  const { post } = useFetchClient();
 
   // Translations
   const PAGE_TITLE = useFormattedLabel('settings.pagetitle');
@@ -46,6 +46,10 @@ const SettingPage = () => {
   const PLACEHOLDER_BRANCH = useFormattedLabel('settings.fields.placeholder.branch');
   const BUTTON_DETAILS = useFormattedLabel('button.details');
 
+  const setConfig = (data: Config) => {
+    post(`/${pluginId}/config`, data);
+  }
+
   return (
     <PageWrapper
       isLoading={isLoading}
@@ -53,14 +57,15 @@ const SettingPage = () => {
       pageTitle={PAGE_TITLE}
     >
       <Stack spacing={6}>
-        <TextField
-          type="text"
+        <TextInput
+          type="password"
           label={GITHUB_TOKEN}
           aria-label={GITHUB_TOKEN}
           name="githubToken"
-          value={githubToken || PLACEHOLDER_GITHUB_TOKEN}
-          disabled
+          placeholder={PLACEHOLDER_GITHUB_TOKEN}
+          defaultValue={githubToken}
           required
+          onBlur={(e) => setConfig({ ...data, githubToken: e.target.value })}
           HintMessage={
             <Typography variant="omega">
               {HINT_GITHUB_TOKEN}{' '}
@@ -73,44 +78,48 @@ const SettingPage = () => {
             </Typography>
           }
         />
-        <TextField
+        <TextInput
           type="text"
           label={OWNER}
           aria-label={OWNER}
           name="githubAccount"
-          value={githubAccount || PLACEHOLDER_OWNER}
-          disabled
+          placeholder={PLACEHOLDER_OWNER}
+          defaultValue={githubAccount}
           required
+          onBlur={(e) => setConfig({ ...data, githubAccount: e.target.value })}
           HintMessage={<Typography variant="omega">{HINT_OWNER}</Typography>}
         />
-        <TextField
+        <TextInput
           type="text"
           label={REPO}
           aria-label={REPO}
           name="repo"
-          value={repo || PLACEHOLDER_REPO}
-          disabled
+          placeholder={PLACEHOLDER_REPO}
+          defaultValue={repo}
           required
+          onBlur={(e) => setConfig({ ...data, repo: e.target.value })}
           HintMessage={<Typography variant="omega">{HINT_REPO}</Typography>}
         />
-        <TextField
+        <TextInput
           type="text"
           label={WORKFLOWID}
           aria-label={WORKFLOWID}
           name="workflow_id"
-          value={workflow || PLACEHOLDER_WORKFLOWID}
-          disabled
+          placeholder={PLACEHOLDER_WORKFLOWID}
+          defaultValue={workflow}
           required
+          onBlur={(e) => setConfig({ ...data, workflow: e.target.value })}
           HintMessage={<Typography variant="omega">{HINT_WORKFLOWID}</Typography>}
         />
-        <TextField
+        <TextInput
           type="text"
           label={BRANCH}
           aria-label={BRANCH}
           name="branch"
-          value={branch || PLACEHOLDER_BRANCH}
-          disabled
+          placeholder={PLACEHOLDER_BRANCH}
+          defaultValue={branch}
           required
+          onBlur={(e) => setConfig({ ...data, branch: e.target.value })}
           HintMessage={<Typography variant="omega">{HINT_BRANCH}</Typography>}
         />
       </Stack>

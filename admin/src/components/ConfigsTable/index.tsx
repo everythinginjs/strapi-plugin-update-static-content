@@ -15,6 +15,7 @@ import {
 import { Plus, Trash } from '@strapi/icons';
 import { useMemo, useState } from 'react';
 import { getFetchClient } from '@strapi/helper-plugin';
+import { Link } from 'react-router-dom';
 
 export default function ConfigsTable() {
   const [data, setData] = useState<Config[]>([]);
@@ -36,8 +37,16 @@ export default function ConfigsTable() {
 
   const COL_COUNT = 4;
 
+  const FooterButton = () => {
+    return (
+      <Link to={location => ({ ...location, pathname: `${location.pathname}/new-workflow` })}>
+        <TFooter icon={<Plus />}>Add another workflow</TFooter>
+      </Link>
+    );
+  };
+
   return (
-    <Table colCount={COL_COUNT} footer={<TFooter icon={<Plus />}>Add another workflow</TFooter>}>
+    <Table colCount={COL_COUNT} footer={<FooterButton />}>
       <Thead>
         <Tr>
           <Th>Id</Th>
@@ -59,7 +68,11 @@ export default function ConfigsTable() {
               <Td>
                 <Flex>
                   <Box paddingLeft={1}>
-                    <IconButton onClick={() => handleDetete(`${config.id}`)} label="Delete" borderWidth={0}>
+                    <IconButton
+                      onClick={() => handleDetete(`${config.id}`)}
+                      label="Delete"
+                      borderWidth={0}
+                    >
                       <Trash />
                     </IconButton>
                   </Box>

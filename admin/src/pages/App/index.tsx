@@ -10,6 +10,7 @@ import { AnErrorOccurred } from '@strapi/helper-plugin';
 import pluginId from '../../pluginId';
 import PluginPage from '../PluginPage';
 import SettingPage from '../SettingPage';
+import AddNewWorkflow from '../SettingPage/addWorkflow';
 
 const App = () => {
   return (
@@ -20,6 +21,9 @@ const App = () => {
         </Route>
         <Route path={`/plugins/${pluginId}`} exact>
           <PluginPage />
+        </Route>
+        <Route path={`/settings/${pluginId}/new-workflow`}>
+          <AddNewWorkflow />
         </Route>
         <Route>
           <AnErrorOccurred />

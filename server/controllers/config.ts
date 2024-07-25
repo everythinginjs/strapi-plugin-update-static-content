@@ -1,25 +1,47 @@
 import type { Strapi } from '@strapi/strapi';
+import * as jose from 'jose';
+import pluginId from '../../admin/src/pluginId';
+import buildPluginConfig from '../utils/buildPluginConfig';
+
 
 export default ({ strapi }: { strapi: Strapi }) => ({
   getPluginConfig: async (ctx) => {
     try {
-      const config = await strapi.entityService?.findOne('plugin::update-static-content.config', 1);
-      console.log(config);
-      ctx.body = config;
+      const pluginConfig = await buildPluginConfig(strapi);
+      ctx.body = pluginConfig;
     }
     catch (err) {
       ctx.body = err;
+      ctx.status = 500;
     }
-    // ctx.body = buildPluginConfig(strapi, true);
   },
 
   updatePluginConfig : async (ctx) => {
     try {
       const { body } = ctx.request;
-      console.log(body);
 
       // Sanitize input data first
       // validateConfig(body);
+
+      const secret = strapi.plugin(pluginId).config("JWT_SECRET") as string | undefined | null;
+      if (!secret) {
+        ctx.status = 500;
+        ctx.body = {
+          error: 'JWT_SECRET not found in server config'
+        };
+        return;
+      }
+      const decodedSecret = jose.base64url.decode(secret);
+      const payload = {
+        githubToken: body.githubToken,
+      }
+
+      const jwt = await new jose.SignJWT(payload)
+      .setProtectedHeader({ alg: 'HS256', "typ": "JWT" })
+      .sign(decodedSecret);
+
+      body.githubToken = jwt;
+      
       const data = await strapi.entityService?.update('plugin::update-static-content.config', 1, {
         data: body
       });

@@ -1,16 +1,16 @@
-import buildPluginConfig from '../utils/buildPluginConfig';
+import {queryPluginConfig} from '../utils/queryPluginConfig';
 import axios from 'axios';
 
 async function history() {
   try {
-    const config = await buildPluginConfig(strapi);
+    const config = await queryPluginConfig(strapi);
     if (!config) {
       return {
         status: 404,
         statusText: 'Config not found',
       };
     }
-    const { githubAccount, repo, workflow, branch, githubToken } = config;
+    const { githubAccount, repo, workflow, branch, githubToken } = config[0];
     const res = await axios.get(
       `https://api.github.com/repos/${githubAccount}/${repo}/actions/workflows/${workflow}/runs?per_page=20&page=1&branch=${branch}`,
       {
@@ -28,14 +28,14 @@ async function history() {
 
 async function trigger() {
   try {
-    const config = await buildPluginConfig(strapi);
+    const config = await queryPluginConfig(strapi);
     if (!config) {
       return {
         status: 404,
         statusText: 'Config not found',
       };
     }
-    const { githubAccount, repo, workflow, branch, githubToken } = config;
+    const { githubAccount, repo, workflow, branch, githubToken } = config[0];
     const res = await axios.post(
       `https://api.github.com/repos/${githubAccount}/${repo}/actions/workflows/${workflow}/dispatches`,
       {
@@ -60,14 +60,14 @@ async function trigger() {
 
 async function getLogs(jobId: string) {
   try {
-    const config = await buildPluginConfig(strapi);
+    const config = await queryPluginConfig(strapi);
     if (!config) {
       return {
         status: 404,
         statusText: 'Config not found',
       };
     }
-    const { githubAccount, repo, githubToken } = config;
+    const { githubAccount, repo, githubToken } = config[0];
     const res = await axios.get(
       `https://api.github.com/repos/${githubAccount}/${repo}/actions/runs/${jobId}/logs`,
       {

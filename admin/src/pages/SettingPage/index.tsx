@@ -7,14 +7,15 @@ import useFormattedLabel from '../../hooks/useFormattedLabel';
 import pluginPermissions from '../../permissions';
 import pluginId from '../../pluginId';
 import Config from '../../../../types/Config';
+import ConfigsTable from '../../components/ConfigsTable';
 
-export default function ProtectedPage(){
+export default function ProtectedPage() {
   return (
     <CheckPagePermissions permissions={pluginPermissions.settings}>
       <SettingPage />
     </CheckPagePermissions>
   );
-} 
+}
 
 const SettingPage = () => {
   // Hooks
@@ -48,7 +49,7 @@ const SettingPage = () => {
 
   const setConfig = (data: Config) => {
     post(`/${pluginId}/config`, data);
-  }
+  };
 
   return (
     <PageWrapper
@@ -56,7 +57,8 @@ const SettingPage = () => {
       baseHeaderLayout={<BaseHeaderLayout title={HEADER_TITLE} subtitle={HEADER_SUBTITLE} />}
       pageTitle={PAGE_TITLE}
     >
-      <Stack spacing={6}>
+      <ConfigsTable />
+      {/* <Stack spacing={6}>
         <TextInput
           type="password"
           label={GITHUB_TOKEN}
@@ -65,7 +67,6 @@ const SettingPage = () => {
           placeholder={PLACEHOLDER_GITHUB_TOKEN}
           defaultValue={githubToken}
           required
-          onBlur={(e) => setConfig({ ...data, githubToken: e.target.value })}
           HintMessage={
             <Typography variant="omega">
               {HINT_GITHUB_TOKEN}{' '}
@@ -86,7 +87,6 @@ const SettingPage = () => {
           placeholder={PLACEHOLDER_OWNER}
           defaultValue={githubAccount}
           required
-          onBlur={(e) => setConfig({ ...data, githubAccount: e.target.value })}
           HintMessage={<Typography variant="omega">{HINT_OWNER}</Typography>}
         />
         <TextInput
@@ -97,7 +97,6 @@ const SettingPage = () => {
           placeholder={PLACEHOLDER_REPO}
           defaultValue={repo}
           required
-          onBlur={(e) => setConfig({ ...data, repo: e.target.value })}
           HintMessage={<Typography variant="omega">{HINT_REPO}</Typography>}
         />
         <TextInput
@@ -108,7 +107,6 @@ const SettingPage = () => {
           placeholder={PLACEHOLDER_WORKFLOWID}
           defaultValue={workflow}
           required
-          onBlur={(e) => setConfig({ ...data, workflow: e.target.value })}
           HintMessage={<Typography variant="omega">{HINT_WORKFLOWID}</Typography>}
         />
         <TextInput
@@ -119,11 +117,9 @@ const SettingPage = () => {
           placeholder={PLACEHOLDER_BRANCH}
           defaultValue={branch}
           required
-          onBlur={(e) => setConfig({ ...data, branch: e.target.value })}
           HintMessage={<Typography variant="omega">{HINT_BRANCH}</Typography>}
         />
-      </Stack>
+      </Stack> */}
     </PageWrapper>
   );
 };
-

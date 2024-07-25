@@ -18,6 +18,38 @@ export default [
     },
   },
   {
+    method: 'GET',
+    path: '/config/:id',
+    handler: 'config.getPluginConfigById',
+    config: {
+      policies: [
+        'admin::isAuthenticatedAdmin',
+        {
+          name: 'admin::hasPermissions',
+          config: {
+            actions: [`plugin::${pluginId}.settings`],
+          },
+        },
+      ],
+    },
+  },
+  {
+    method: 'DELETE',
+    path: '/config/:id',
+    handler: 'config.deletePluginConfigById',
+    config: {
+      policies: [
+        'admin::isAuthenticatedAdmin',
+        {
+          name: 'admin::hasPermissions',
+          config: {
+            actions: [`plugin::${pluginId}.settings`],
+          },
+        },
+      ],
+    },
+  },
+  {
     method: 'POST',
     path: '/config',
     handler: 'config.updatePluginConfig',

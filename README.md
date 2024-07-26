@@ -88,6 +88,11 @@ jobs:
           fing --access-token "${TOKEN}" up --app vahoora-gatsby --dispatch
 ```
 
+## Usage 
+
+1. Add the workflow in the plugin's settings `admin/settings/update-static-content`
+2. Trigger a build in the plugin page
+
 ## Roadmap
 
 - Cancel workflow manually.

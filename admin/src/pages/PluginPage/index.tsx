@@ -1,4 +1,5 @@
 import {
+  Flex,
   BaseHeaderLayout,
   Button,
   Link,
@@ -172,15 +173,29 @@ function PluginPage() {
             </Link>
           }
           primaryAction={
-            <Button
-              onClick={triggerGithubActions}
-              variant="default"
-              size="L"
-              loading={loadingTriggerButton}
-              startIcon={<Plus />}
-            >
-              {PRIMARY_ACTION_BUTTON}
-            </Button>
+            <Flex gap={3}>
+               <Button
+                onClick={() => {
+                  handleRefetch();
+                  setToastToggle(false);
+                }}
+                variant="secondary"
+                size="L"
+                loading={isLoading}
+                startIcon={<Refresh />}
+              >
+                {REFRESH_BUTTON}
+              </Button>
+              <Button
+                onClick={triggerGithubActions}
+                variant="default"
+                size="L"
+                loading={loadingTriggerButton}
+                startIcon={<Plus />}
+              >
+                {PRIMARY_ACTION_BUTTON}
+              </Button>
+            </Flex>
           }
         />
       }

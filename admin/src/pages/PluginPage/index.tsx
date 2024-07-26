@@ -130,7 +130,6 @@ function PluginPage() {
           message: TOAST_FAILURE_UNPROCESSABLE_DESCRIPTION,
           action: (
             <Link
-              isExternal
               href="https://docs.github.com/en/actions/managing-workflow-runs/disabling-and-enabling-a-workflow"
             >
               {SEE_MORE_BUTTON}

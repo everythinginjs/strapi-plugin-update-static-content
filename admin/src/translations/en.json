@@ -23,11 +23,11 @@
   "settings.fields.hint.branch": "Enter the desired `branch`",
   "settings.fields.hint.roles": "Roles that have access to the plugin",
 
-  "settings.fields.placeholder.githubtoken": "Set `githubToken` in plugin config",
-  "settings.fields.placeholder.owner": "Set `owner` in plugin config",
-  "settings.fields.placeholder.repo": "Set `repo` in plugin config",
-  "settings.fields.placeholder.workflowid": "Set `workflowId` in plugin config",
-  "settings.fields.placeholder.branch": "Set `branch` in plugin config",
+  "settings.fields.placeholder.githubtoken": "ghp_*******",
+  "settings.fields.placeholder.owner": "evrythinginjs",
+  "settings.fields.placeholder.repo": "my-static-website",
+  "settings.fields.placeholder.branch": "main",
+  "settings.fields.placeholder.workflowid": "deploy.yaml",
 
   "plugin.title": "Update Static Content Page",
   "plugin.headers.title": "Update Static Content",
@@ -49,6 +49,7 @@
   "button.seeMore": "See More",
   "button.refresh": "Refresh",
   "button.back": "Back",
+  "button.save": "Save",
   "button.details": "Details",
   "confirm.message": "Do you confirm to trigger this action ?"
 }

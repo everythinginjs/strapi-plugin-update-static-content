@@ -32,19 +32,30 @@
   "plugin.title": "Update Static Content Page",
   "plugin.headers.title": "Update Static Content",
   "plugin.headers.subtitle": "Rebuild and deploy your site manually",
+
+  "settings.table.footer.label": "Add another workflow",
+  
   "plugin.buttons.secondary": "Visit",
   "plugin.buttons.primary": "Trigger",
   "plugin.missingConfig.message": "Please, setup the following plugin configuration → ",
   "plugin.missingConfig.button": "Plugin Settings",
-
+  
   "plugin.toast.success.title": "Successfully Triggered",
   "plugin.toast.success.description": "Your workflow_dispatch event already started to progress.",
-
+  
   "plugin.toast.failure.unknown.title": "Unknown Error",
   "plugin.toast.failure.unknown.description": "Something goes wrong try later",
-
+  
   "plugin.toast.failure.unprocessableEntity.title": "Event Error",
   "plugin.toast.failure.unprocessableEntity.description": "Your workflow_dispatch event is disabled.",
+  
+  
+  "settings.table.confirmDelete.title": "Delete workflow configuration?",
+  "settings.table.confirmDelete.confirm": "Yes, delete",
+
+  "configModal.title": "Confirm Action",
+  "configModal.cancel": "Cancel",
+  "configModal.confirm": "Confirm",
 
   "button.seeMore": "See More",
   "button.refresh": "Refresh",

@@ -19,7 +19,6 @@ const SettingPage = () => {
   const HEADER_TITLE = useFormattedLabel('settings.headers.title');
   const HEADER_SUBTITLE = useFormattedLabel('settings.headers.subtitle');
 
-
   return (
     <PageWrapper
       baseHeaderLayout={<BaseHeaderLayout title={HEADER_TITLE} subtitle={HEADER_SUBTITLE} />}

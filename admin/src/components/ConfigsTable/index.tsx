@@ -18,6 +18,7 @@ import { getFetchClient } from '@strapi/helper-plugin';
 import { Link } from 'react-router-dom';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import { ConfirmModal } from '../ConfirmModal';
+import PageLoading from '../PageLoading';
 
 interface ConfigResponse {
   data: Config[];
@@ -26,13 +27,16 @@ interface ConfigResponse {
 export default function ConfigsTable() {
   const [data, setData] = useState<Config[]>([]);
   const { get, del } = getFetchClient();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const CONFIRM_DELETE_TITLE = useFormattedLabel('settings.table.confirmDelete.title');
   const CONFIRM_DELETE = useFormattedLabel('settings.table.confirmDelete.confirm');
 
   useMemo(() => {
+    setIsLoading(true);
     get<any, ConfigResponse>(`/${pluginId}/config`)
       .then((res) => {
+        setIsLoading(false);
         setData(res.data);
       })
       .catch((err) => {
@@ -44,8 +48,10 @@ export default function ConfigsTable() {
     const deleteConfirm = await del(`/${pluginId}/config/${id}`);
     if (deleteConfirm) {
       try {
+        setIsLoading && setIsLoading(true);
         const newData = await get<any, ConfigResponse>(`/${pluginId}/config`);
         setData(newData.data);
+        setIsLoading && setIsLoading(false);
       }
       catch (err) {
         console.error(err);
@@ -64,7 +70,9 @@ export default function ConfigsTable() {
     );
   };
 
-  return (
+  return isLoading ? (
+    <PageLoading />
+  ) : (
     <Table colCount={COL_COUNT} footer={<FooterButton />}>
       <Thead>
         <Tr>

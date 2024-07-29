@@ -10,7 +10,7 @@ import {
   Th,
   Flex,
   Box,
-  IconButton
+  IconButton,
 } from '@strapi/design-system';
 import { Plus, Trash } from '@strapi/icons';
 import { useMemo, useState } from 'react';
@@ -18,6 +18,10 @@ import { getFetchClient } from '@strapi/helper-plugin';
 import { Link } from 'react-router-dom';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import { ConfirmModal } from '../ConfirmModal';
+
+interface ConfigResponse {
+  data: Config[];
+}
 
 export default function ConfigsTable() {
   const [data, setData] = useState<Config[]>([]);
@@ -27,16 +31,25 @@ export default function ConfigsTable() {
   const CONFIRM_DELETE = useFormattedLabel('settings.table.confirmDelete.confirm');
 
   useMemo(() => {
-    get(`/${pluginId}/config`).then((res) => {
-      setData(res.data);
-    });
+    get<any, ConfigResponse>(`/${pluginId}/config`)
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, [setData]);
 
   async function handleDetete(id: string) {
     const deleteConfirm = await del(`/${pluginId}/config/${id}`);
     if (deleteConfirm) {
-      const newData = await get(`/${pluginId}/config`);
-      setData(newData.data);
+      try {
+        const newData = await get<any, ConfigResponse>(`/${pluginId}/config`);
+        setData(newData.data);
+      }
+      catch (err) {
+        console.error(err);
+      }
     }
   }
 
@@ -74,18 +87,16 @@ export default function ConfigsTable() {
               <Td>
                 <Flex>
                   <Box paddingLeft={1}>
-                    <ConfirmModal onConfirm={() => handleDetete(`${config.id}`)} title={CONFIRM_DELETE_TITLE} confirmMsg={CONFIRM_DELETE}>
-                      {
-                        (onOpen) => (
-                          <IconButton
-                          onClick={onOpen}
-                          label="Delete"
-                          borderWidth={0}
-                          >
-                        <Trash />
-                      </IconButton>
-                      )
-                    }
+                    <ConfirmModal
+                      onConfirm={() => handleDetete(`${config.id}`)}
+                      title={CONFIRM_DELETE_TITLE}
+                      confirmMsg={CONFIRM_DELETE}
+                    >
+                      {(onOpen) => (
+                        <IconButton onClick={onOpen} label="Delete" borderWidth={0}>
+                          <Trash />
+                        </IconButton>
+                      )}
                     </ConfirmModal>
                   </Box>
                 </Flex>

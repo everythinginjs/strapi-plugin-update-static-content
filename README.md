@@ -31,6 +31,7 @@ Plugin Page
 - Downloading Logs
 - Roles to access the plugin
 - Strapi Permissions in v1.0.7
+- Supports PAT (Personal Access Token) or Github App authentication
 
 ## Installation
 
@@ -44,11 +45,13 @@ Plugin Page
 
 1. Add plugin configs inside `strapiProject/config/plugins.js`
 
+For using PAT (Personal Access Token) 
 ```javascript
 module.exports = ({ env }) => ({
   'update-static-content': {
     enabled: true,
     config: {
+      githubAuthType: 'token',
       githubToken: env('GITHUB_TOKEN'), // accessing personal github token from env file
       owner: 'everythinginjs', // owner of the repo
       repo: 'vahoora', // name of the repo
@@ -59,7 +62,32 @@ module.exports = ({ env }) => ({
 });
 ```
 
-NOTE: add `roles` property (roles: ['strapi-super-admin', 'strapi-editor', 'strapi-author']) if you are using the plugin **lesser than v1.0.7** since above that version it is handled by Strapi Permissions.
+For using Github App authentication through Installation ID and Private Key,
+```javascript
+module.exports = ({ env }) => ({
+  'update-static-content': {
+    enabled: true,
+    config: {
+      githubAuthType: 'app',
+      githubAppId: env("GITHUB_APP_ID"),
+      githubPrivateKey: Buffer.from(env("GITHUB_PRIVATE_KEY_BASE64"), "base64").toString("utf8"),
+      githubInstallationId: env("GITHUB_INSTALLATION_ID"),
+      owner: 'everythinginjs', // owner of the repo
+      repo: 'vahoora', // name of the repo
+      workflowId: 'deploy.yaml', // workflowId OR filename
+      branch: 'main', // branch name
+    },
+  },
+});
+```
+
+
+> NOTE #1: add `roles` property (roles: ['strapi-super-admin', 'strapi-editor', 'strapi-author']) if you are using the plugin **lesser than v1.0.7** since above that version it is handled by Strapi Permissions.
+
+> NOTE #2: In case you're using authentication through Github App, the `GITHUB_PRIVATE_KEY_BASE64` should be base64 encoded to avoid issues with newlines and other characters. 
+> To `base64` encode the private key, you can use the following command `cat private-key.pem | base64`
+
+> NOTE #3: The minimum required permissions for the Github App are `Contents: Read` and `Workflows: Read & Write`.
 
 2. Create a file in the root of your project `.github/workflows/deploy.yml` like below. In this example we are using fing cloud
 

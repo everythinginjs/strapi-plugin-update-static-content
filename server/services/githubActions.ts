@@ -1,69 +1,33 @@
 import buildPluginConfig from '../utils/buildPluginConfig';
 import axios from 'axios';
+import {GitHubAuthType} from "../config/index";
+import {GithubApi} from "./githubApi.abstract";
+import GithubApiToken from "./githubApi.token";
+import GithubApiApp from "./githubApi.app";
 
-async function history() {
-  try {
-    const { owner, repo, workflowId, branch, githubToken } = buildPluginConfig(strapi);
-    const res = await axios.get(
-      `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/runs?per_page=20&page=1&branch=${branch}`,
-      {
-        headers: {
-          Accept: 'application/vnd.github+json',
-          Authorization: `token ${githubToken}`,
-        },
-      }
-    );
-    return res;
-  } catch (err) {
-    console.log(err);
+export default ({strapi}) => {
+  const { githubAuthType } = buildPluginConfig(strapi);
+  let githubApi: GithubApi;
+
+  if (githubAuthType === GitHubAuthType.TOKEN) {
+    githubApi = new GithubApiToken(strapi);
+  } else if (githubAuthType === GitHubAuthType.APP) {
+    githubApi = new GithubApiApp(strapi);
+  } else {
+    throw new Error(`Invalid GitHub auth type, should be either ${GitHubAuthType.TOKEN} or ${GitHubAuthType.APP}`);
   }
-}
 
-async function trigger() {
-  try {
-    const { owner, repo, workflowId, branch, githubToken } = buildPluginConfig(strapi);
-    const res = await axios.post(
-      `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/dispatches`,
-      {
-        ref: branch,
-        inputs: {},
-      },
-      {
-        headers: {
-          Accept: 'application/vnd.github+json',
-          Authorization: `token ${githubToken}`,
-        },
-      }
-    );
-    return res;
-  } catch (err) {
-    return {
-      status: err.response.status,
-      statusText: err.response.statusText,
-    };
+  return {
+    async history() {
+      return await githubApi.history();
+    },
+
+    async trigger() {
+      return await githubApi.trigger();
+    },
+
+    async getLogs(jobId: string) {
+      return await githubApi.getLogs(jobId);
+    }
   }
-}
-
-async function getLogs(jobId: string) {
-  try {
-    const { owner, repo, githubToken } = buildPluginConfig(strapi);
-    const res = await axios.get(
-      `https://api.github.com/repos/${owner}/${repo}/actions/runs/${jobId}/logs`,
-      {
-        headers: {
-          Accept: 'application/vnd.github+json',
-          Authorization: `token ${githubToken}`,
-        },
-      }
-    );
-    return res.request.res.responseUrl;
-  } catch (err) {
-    console.log(err);
-    return {
-      status: err.response.status,
-      statusText: err.response.statusText,
-    };
-  }
-}
-
-export default { history, trigger, getLogs };
+};

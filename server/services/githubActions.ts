@@ -1,11 +1,18 @@
-import buildPluginConfig from '../utils/buildPluginConfig';
+import {queryPluginConfig} from '../utils/queryPluginConfig';
 import axios from 'axios';
 
 async function history() {
   try {
-    const { owner, repo, workflowId, branch, githubToken } = buildPluginConfig(strapi);
+    const config = await queryPluginConfig(strapi);
+    if (!config) {
+      return {
+        status: 404,
+        statusText: 'Config not found',
+      };
+    }
+    const { githubAccount, repo, workflow, branch, githubToken } = config[0];
     const res = await axios.get(
-      `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/runs?per_page=20&page=1&branch=${branch}`,
+      `https://api.github.com/repos/${githubAccount}/${repo}/actions/workflows/${workflow}/runs?per_page=20&page=1&branch=${branch}`,
       {
         headers: {
           Accept: 'application/vnd.github+json',
@@ -21,9 +28,16 @@ async function history() {
 
 async function trigger() {
   try {
-    const { owner, repo, workflowId, branch, githubToken } = buildPluginConfig(strapi);
+    const config = await queryPluginConfig(strapi);
+    if (!config) {
+      return {
+        status: 404,
+        statusText: 'Config not found',
+      };
+    }
+    const { githubAccount, repo, workflow, branch, githubToken } = config[0];
     const res = await axios.post(
-      `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/dispatches`,
+      `https://api.github.com/repos/${githubAccount}/${repo}/actions/workflows/${workflow}/dispatches`,
       {
         ref: branch,
         inputs: {},
@@ -46,9 +60,16 @@ async function trigger() {
 
 async function getLogs(jobId: string) {
   try {
-    const { owner, repo, githubToken } = buildPluginConfig(strapi);
+    const config = await queryPluginConfig(strapi);
+    if (!config) {
+      return {
+        status: 404,
+        statusText: 'Config not found',
+      };
+    }
+    const { githubAccount, repo, githubToken } = config[0];
     const res = await axios.get(
-      `https://api.github.com/repos/${owner}/${repo}/actions/runs/${jobId}/logs`,
+      `https://api.github.com/repos/${githubAccount}/${repo}/actions/runs/${jobId}/logs`,
       {
         headers: {
           Accept: 'application/vnd.github+json',

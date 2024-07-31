@@ -42,18 +42,19 @@ Plugin Page
 
 ## Plugin Configuration
 
-1. Add plugin configs inside `strapiProject/config/plugins.js`
+1. Create a JWT BASE64 secret key
+   > For example with :  `openssl rand -base64 32`
+
+2. Add the key in the .env
+
+3. Add plugin configs inside `strapiProject/config/plugins.js`
 
 ```javascript
 module.exports = ({ env }) => ({
   'update-static-content': {
     enabled: true,
     config: {
-      githubToken: env('GITHUB_TOKEN'), // accessing personal github token from env file
-      owner: 'everythinginjs', // owner of the repo
-      repo: 'vahoora', // name of the repo
-      workflowId: '40807041', // workflowId OR filename
-      branch: 'main', // branch name
+      JWT_SECRET: env('JWT_SECRET'),
     },
   },
 });
@@ -61,7 +62,7 @@ module.exports = ({ env }) => ({
 
 NOTE: add `roles` property (roles: ['strapi-super-admin', 'strapi-editor', 'strapi-author']) if you are using the plugin **lesser than v1.0.7** since above that version it is handled by Strapi Permissions.
 
-2. Create a file in the root of your project `.github/workflows/deploy.yml` like below. In this example we are using fing cloud
+4. Create a file in the root of your project `.github/workflows/deploy.yml` like below. In this example we are using fing cloud
 
 ```yml
 name: Fing Deployment # a name for your workflow
@@ -86,6 +87,11 @@ jobs:
           npm install -g @fingcloud/cli
           fing --access-token "${TOKEN}" up --app vahoora-gatsby --dispatch
 ```
+
+## Usage 
+
+1. Add the workflow in the plugin's settings `admin/settings/update-static-content`
+2. Trigger a build in the plugin page
 
 ## Roadmap
 

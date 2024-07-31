@@ -11,6 +11,7 @@ import {
   Flex,
   Box,
   IconButton,
+  Layout
 } from '@strapi/design-system';
 import { Plus, Trash } from '@strapi/icons';
 import { useMemo, useState } from 'react';
@@ -73,6 +74,8 @@ export default function ConfigsTable() {
   return isLoading ? (
     <PageLoading />
   ) : (
+    <Layout>
+
     <Table colCount={COL_COUNT} footer={<FooterButton />}>
       <Thead>
         <Tr>
@@ -113,5 +116,7 @@ export default function ConfigsTable() {
           ))}
       </Tbody>
     </Table>
+    </Layout>
+
   );
 }

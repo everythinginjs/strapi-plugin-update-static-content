@@ -223,9 +223,8 @@ function PluginPage() {
             shadow="tableShadow"
             hasRadius
             border="1px solid"
-            flex="1"
-            maxWidth="15em"
-            minWidth="12em"
+            minWidth="15em"
+            width="15em"
             padding={4}
             alignItems="start"
           >
@@ -296,6 +295,8 @@ function PluginPage() {
                 </Tbody>
               </Table>
           )}
+        </Flex>
+        <Flex width="100vw">
         </Flex>
       </Layout>
     </PageWrapper>

@@ -1,16 +1,27 @@
-import {queryPluginConfig} from '../utils/queryPluginConfig';
+import { queryPluginConfig, queryPluginConfigId } from '../utils/queryPluginConfig';
 import axios from 'axios';
 
-async function history() {
-  try {
+async function getConfig(id) {
+  // if the id is 0, it means the user is trying to get the first config
+  if (id === '0') {
     const config = await queryPluginConfig(strapi);
+    return config[0];
+  }
+  else {
+    return await queryPluginConfigId(strapi, id);
+  }
+}
+
+async function history(id: string) {
+  try {
+    const config = await getConfig(id);
     if (!config) {
       return {
         status: 404,
         statusText: 'Config not found',
       };
     }
-    const { githubAccount, repo, workflow, branch, githubToken } = config[0];
+    const { githubAccount, repo, workflow, branch, githubToken } = config;
     const res = await axios.get(
       `https://api.github.com/repos/${githubAccount}/${repo}/actions/workflows/${workflow}/runs?per_page=20&page=1&branch=${branch}`,
       {
@@ -26,16 +37,16 @@ async function history() {
   }
 }
 
-async function trigger() {
+async function trigger(id: string) {
   try {
-    const config = await queryPluginConfig(strapi);
+    const config = await getConfig(id);
     if (!config) {
       return {
         status: 404,
         statusText: 'Config not found',
       };
     }
-    const { githubAccount, repo, workflow, branch, githubToken } = config[0];
+    const { githubAccount, repo, workflow, branch, githubToken } = config;
     const res = await axios.post(
       `https://api.github.com/repos/${githubAccount}/${repo}/actions/workflows/${workflow}/dispatches`,
       {
@@ -58,16 +69,16 @@ async function trigger() {
   }
 }
 
-async function getLogs(jobId: string) {
+async function getLogs(jobId: string, id: string) {
   try {
-    const config = await queryPluginConfig(strapi);
+    const config = await getConfig(id);
     if (!config) {
       return {
         status: 404,
         statusText: 'Config not found',
       };
     }
-    const { githubAccount, repo, githubToken } = config[0];
+    const { githubAccount, repo, githubToken } = config;
     const res = await axios.get(
       `https://api.github.com/repos/${githubAccount}/${repo}/actions/runs/${jobId}/logs`,
       {

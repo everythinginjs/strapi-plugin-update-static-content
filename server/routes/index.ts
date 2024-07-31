@@ -67,7 +67,7 @@ export default [
   },
   {
     method: 'GET',
-    path: '/github-actions-history',
+    path: '/github-actions-history/:id',
     handler: 'githubActions.history',
     config: {
       policies: [
@@ -83,7 +83,7 @@ export default [
   },
   {
     method: 'POST',
-    path: '/github-actions-trigger',
+    path: '/github-actions-trigger/:id',
     handler: 'githubActions.trigger',
     config: {
       policies: [
@@ -99,7 +99,7 @@ export default [
   },
   {
     method: 'GET',
-    path: '/github-actions-jobs-log',
+    path: '/github-actions-jobs-log/:id',
     handler: 'githubActions.log',
     config: {
       policies: [

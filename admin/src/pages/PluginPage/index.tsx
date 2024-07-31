@@ -2,6 +2,7 @@ import {
   Flex,
   BaseHeaderLayout,
   Button,
+  LinkButton,
   Link,
   Table,
   Tbody,
@@ -215,89 +216,97 @@ function PluginPage() {
     >
       {toastToggle && <ToastMsg {...toastMsg} closeToastHandler={() => setToastToggle(false)} />}
       <Layout>
-        <Flex gap={3} alignItems="start" width="100%" overflowX="auto">
+        <Flex gap={3} alignItems="start" width="100%" overflowX="auto" direction="column">
           <Flex
             gap={3}
-            direction="column"
             background="neutral0"
             shadow="tableShadow"
             hasRadius
             border="1px solid"
-            minWidth="15em"
-            width="15em"
+            // minWidth="15em"
+            // width="15em"
             padding={4}
             alignItems="start"
+            overflowX="auto"
           >
-            <h1>Workflows</h1>
-            <Flex direction="column" width="100%">
-              {!fetchingWorkflows &&
-                workflows.map((workflow, index) => {
-                  if (!selectedWorkflow) {
-                    setSelectedWorkflow(workflows[0].id ?? index);
-                  }
-                  return (
-                    <Button
-                      onClick={() => handleSelectWorkflow(workflow.id ?? index)}
-                      variant={selectedWorkflow === workflow.id ? 'primary' : 'ghost'}
-                      size="L"
-                      loading={fetchingWorkflows}
-                      width="100%"
-                      key={workflow.id ?? index}
+            {/* <h1>Workflows</h1> */}
+            {!fetchingWorkflows &&
+              workflows.map((workflow, index) => {
+                if (!selectedWorkflow) {
+                  setSelectedWorkflow(workflows[0].id ?? index);
+                }
+                return (
+                  <Button
+                    onClick={() => handleSelectWorkflow(workflow.id ?? index)}
+                    variant={selectedWorkflow === workflow.id ? 'primary' : 'ghost'}
+                    size="L"
+                    loading={fetchingWorkflows}
+                    width="100%"
+                    key={workflow.id ?? index}
+                  >
+                    <p
+                      style={{
+                        width: '100%',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
                     >
                       {workflow.workflow}
-                    </Button>
-                  );
-                })}
-            </Flex>
+                    </p>
+                  </Button>
+                );
+              })}
+              <LinkButton  to={`/settings/${pluginId}`} variant="ghost" size="L">
+                <Plus />
+              </LinkButton>
           </Flex>
           {isLoading ? (
-            <Flex flex="1" justifyContent="center" alignItems="center">
+            <Flex width="100%" justifyContent="center" alignItems="center" paddingTop="5em" paddingBottom="5em">
               <PageLoading />
             </Flex>
           ) : (
-              <Table colCount={6} rowCount={21}>
-                <Thead>
-                  <Tr>
-                    {THEAD_ITEMS.map((title, i) => (
-                      <Th key={i}>
-                        <Typography variant="sigma">{title}</Typography>
-                      </Th>
-                    ))}
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {data.workflow_runs?.map(
-                    ({
-                      id,
-                      conclusion,
-                      name,
-                      run_number,
-                      run_started_at,
-                      html_url,
-                      updated_at,
-                      created_at,
-                    }) => {
-                      return (
-                        <CustomRow
-                          key={id}
-                          id={id}
-                          conclusion={conclusion}
-                          name={name}
-                          run_number={run_number}
-                          run_started_at={run_started_at}
-                          html_url={html_url}
-                          updated_at={updated_at}
-                          created_at={created_at}
-                        />
-                      );
-                    }
-                  )}
-                </Tbody>
-              </Table>
+            <Table colCount={6} rowCount={21}>
+              <Thead>
+                <Tr>
+                  {THEAD_ITEMS.map((title, i) => (
+                    <Th key={i}>
+                      <Typography variant="sigma">{title}</Typography>
+                    </Th>
+                  ))}
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.workflow_runs?.map(
+                  ({
+                    id,
+                    conclusion,
+                    name,
+                    run_number,
+                    run_started_at,
+                    html_url,
+                    updated_at,
+                    created_at,
+                  }) => {
+                    return (
+                      <CustomRow
+                        key={id}
+                        id={id}
+                        conclusion={conclusion}
+                        name={name}
+                        run_number={run_number}
+                        run_started_at={run_started_at}
+                        html_url={html_url}
+                        updated_at={updated_at}
+                        created_at={created_at}
+                      />
+                    );
+                  }
+                )}
+              </Tbody>
+            </Table>
           )}
         </Flex>
-        <Flex width="100vw">
-        </Flex>
+        <Flex width="100vw"></Flex>
       </Layout>
     </PageWrapper>
   );

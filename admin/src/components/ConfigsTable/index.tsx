@@ -13,45 +13,27 @@ import {
   IconButton,
 } from '@strapi/design-system';
 import { Plus, Trash } from '@strapi/icons';
-import { useMemo, useState } from 'react';
 import { getFetchClient } from '@strapi/helper-plugin';
 import { Link } from 'react-router-dom';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import { ConfirmModal } from '../ConfirmModal';
 import PageLoading from '../PageLoading';
-
-interface ConfigResponse {
-  data: Config[];
-}
+import useFetch from '../../hooks/useFetch';
 
 export default function ConfigsTable() {
-  const [data, setData] = useState<Config[]>([]);
-  const { get, del } = getFetchClient();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [data, isDataLoading, refetchData] = useFetch<Config[]>(`/${pluginId}/config`);
+  const { del } = getFetchClient();
+
+  console.log(data, isDataLoading);
 
   const CONFIRM_DELETE_TITLE = useFormattedLabel('settings.table.confirmDelete.title');
   const CONFIRM_DELETE = useFormattedLabel('settings.table.confirmDelete.confirm');
-
-  useMemo(() => {
-    setIsLoading(true);
-    get<any, ConfigResponse>(`/${pluginId}/config`)
-      .then((res) => {
-        setIsLoading(false);
-        setData(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [setData]);
 
   async function handleDetete(id: string) {
     const deleteConfirm = await del(`/${pluginId}/config/${id}`);
     if (deleteConfirm) {
       try {
-        setIsLoading && setIsLoading(true);
-        const newData = await get<any, ConfigResponse>(`/${pluginId}/config`);
-        setData(newData.data);
-        setIsLoading && setIsLoading(false);
+        refetchData();
       }
       catch (err) {
         console.error(err);
@@ -70,7 +52,7 @@ export default function ConfigsTable() {
     );
   };
 
-  return isLoading ? (
+  return isDataLoading ? (
     <PageLoading />
   ) : (
     <Table colCount={COL_COUNT} footer={<FooterButton />}>

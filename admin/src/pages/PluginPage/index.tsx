@@ -22,6 +22,8 @@ import useFetch from '../../hooks/useFetch';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import pluginPermissions from '../../permissions';
 import pluginId from '../../pluginId';
+import Config from '../../../../types/Config';
+import PageLoading from '../../components/PageLoading';
 
 const THEAD_ITEMS = [
   'Run Number',
@@ -67,7 +69,17 @@ function PluginPage() {
   const [toastMsg, setToastMsg] = useState<Toast>({} as Toast);
   const [toastToggle, setToastToggle] = useState(false);
   const { post } = useFetchClient();
-  const [data, isLoading, handleRefetch] = useFetch<Data>(`/${pluginId}/github-actions-history`);
+  const [workflows, fetchingWorkflows, handleRefetchWorkflows] = useFetch<Config[]>(
+    `/${pluginId}/config`
+  );
+  
+  const [selectedWorkflow, setSelectedWorkflow] = useState<number>();
+  const [data, isLoading, handleRefetch] = useFetch<Data>(`/${pluginId}/github-actions-history/${selectedWorkflow || "0"}`);
+
+  const handleSelectWorkflow = (workflowId: number) => {
+    setSelectedWorkflow(workflowId);
+    handleRefetch();
+  };
 
   // Translations
   const TITLE = useFormattedLabel('plugin.title');
@@ -101,7 +113,7 @@ function PluginPage() {
 
     try {
       setLoadingTriggerButton(true);
-      await post(`/${pluginId}/github-actions-trigger`);
+      await post(`/${pluginId}/github-actions-trigger/${selectedWorkflow || "0"}`);
       setToastMsg({
         variant: 'success',
         title: TOAST_SUCCESS_TITLE,
@@ -129,9 +141,7 @@ function PluginPage() {
           title: TOAST_FAILURE_UNPROCESSABLE_TITLE,
           message: TOAST_FAILURE_UNPROCESSABLE_DESCRIPTION,
           action: (
-            <Link
-              href="https://docs.github.com/en/actions/managing-workflow-runs/disabling-and-enabling-a-workflow"
-            >
+            <Link href="https://docs.github.com/en/actions/managing-workflow-runs/disabling-and-enabling-a-workflow">
               {SEE_MORE_BUTTON}
             </Link>
           ),
@@ -161,7 +171,7 @@ function PluginPage() {
 
   return (
     <PageWrapper
-      isLoading={isLoading}
+      isLoading={fetchingWorkflows}
       baseHeaderLayout={
         <BaseHeaderLayout
           title={HEADER_TITLE}
@@ -173,7 +183,7 @@ function PluginPage() {
           }
           primaryAction={
             <Flex gap={3}>
-               <Button
+              <Button
                 onClick={() => {
                   handleRefetch();
                   setToastToggle(false);
@@ -201,45 +211,88 @@ function PluginPage() {
       pageTitle={TITLE}
     >
       {toastToggle && <ToastMsg {...toastMsg} closeToastHandler={() => setToastToggle(false)} />}
-      <Table colCount={6} rowCount={21}>
-        <Thead>
-          <Tr>
-            {THEAD_ITEMS.map((title, i) => (
-              <Th key={i}>
-                <Typography variant="sigma">{title}</Typography>
-              </Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.workflow_runs?.map(
-            ({
-              id,
-              conclusion,
-              name,
-              run_number,
-              run_started_at,
-              html_url,
-              updated_at,
-              created_at,
-            }) => {
-              return (
-                <CustomRow
-                  key={id}
-                  id={id}
-                  conclusion={conclusion}
-                  name={name}
-                  run_number={run_number}
-                  run_started_at={run_started_at}
-                  html_url={html_url}
-                  updated_at={updated_at}
-                  created_at={created_at}
-                />
-              );
-            }
-          )}
-        </Tbody>
-      </Table>
+      <Flex gap={3} alignItems="start" width="100%" overflowX="auto">
+        <Flex
+          gap={3}
+          direction="column"
+          background="neutral0"
+          shadow="tableShadow"
+          hasRadius
+          border="1px solid"
+          flex="1"
+          maxWidth="15em"
+          minWidth="12em"
+          padding={4}
+          alignItems="start"
+        >
+          <h1>Workflows</h1>
+          <Flex direction="column" width="100%">
+            {!fetchingWorkflows &&
+              workflows.map((workflow, index) => {
+                if (!selectedWorkflow) {
+                  setSelectedWorkflow(workflows[0].id ?? index);
+                }
+                return (
+                  <Button
+                    onClick={() => handleSelectWorkflow(workflow.id ?? index)}
+                    variant={selectedWorkflow === workflow.id ? 'primary' : 'ghost'}
+                    size="L"
+                    loading={fetchingWorkflows}
+                    width="100%"
+                    key={workflow.id ?? index}
+                  >
+                    {workflow.workflow}
+                  </Button>
+                );
+              })}
+          </Flex>
+        </Flex>
+        {isLoading ? (
+          <Flex flex="1" justifyContent="center" alignItems="center">
+            <PageLoading />
+          </Flex>
+        ) : (
+          <Table colCount={6} rowCount={21}>
+            <Thead>
+              <Tr>
+                {THEAD_ITEMS.map((title, i) => (
+                  <Th key={i}>
+                    <Typography variant="sigma">{title}</Typography>
+                  </Th>
+                ))}
+              </Tr>
+            </Thead>
+            <Tbody>
+              {data.workflow_runs?.map(
+                ({
+                  id,
+                  conclusion,
+                  name,
+                  run_number,
+                  run_started_at,
+                  html_url,
+                  updated_at,
+                  created_at,
+                }) => {
+                  return (
+                    <CustomRow
+                      key={id}
+                      id={id}
+                      conclusion={conclusion}
+                      name={name}
+                      run_number={run_number}
+                      run_started_at={run_started_at}
+                      html_url={html_url}
+                      updated_at={updated_at}
+                      created_at={created_at}
+                    />
+                  );
+                }
+              )}
+            </Tbody>
+          </Table>
+        )}
+      </Flex>
     </PageWrapper>
   );
 }

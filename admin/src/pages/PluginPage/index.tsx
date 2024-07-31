@@ -14,6 +14,7 @@ import {
   Tr,
   Typography,
   VisuallyHidden,
+  Layout,
 } from '@strapi/design-system';
 import { CheckPagePermissions, useFetchClient } from '@strapi/helper-plugin';
 import { ArrowLeft, Check, More, Plus, Refresh } from '@strapi/icons';

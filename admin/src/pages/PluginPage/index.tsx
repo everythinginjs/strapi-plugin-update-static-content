@@ -15,7 +15,7 @@ import {
   Layout,
 } from '@strapi/design-system';
 import { CheckPagePermissions, useFetchClient } from '@strapi/helper-plugin';
-import { ArrowLeft, Layer, Plus, Refresh } from '@strapi/icons';
+import { ArrowLeft, Plus, Refresh } from '@strapi/icons';
 import React, { useState } from 'react';
 import CustomRow from '../../components/CustomRow';
 import PageWrapper from '../../components/PageWrapper';

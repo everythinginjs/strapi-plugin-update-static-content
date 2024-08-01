@@ -12,7 +12,7 @@ async function getConfig(id) {
   }
 }
 
-async function history(id: string) {
+async function history(id: string, page=1) {
   try {
     const config = await getConfig(id);
     if (!config) {
@@ -22,8 +22,9 @@ async function history(id: string) {
       };
     }
     const { githubAccount, repo, workflow, branch, githubToken } = config;
+    const perPage = 20;
     const res = await axios.get(
-      `https://api.github.com/repos/${githubAccount}/${repo}/actions/workflows/${workflow}/runs?per_page=20&page=1&branch=${branch}`,
+      `https://api.github.com/repos/${githubAccount}/${repo}/actions/workflows/${workflow}/runs?per_page=${perPage}&page=${page}&branch=${branch}`,
       {
         headers: {
           Accept: 'application/vnd.github+json',

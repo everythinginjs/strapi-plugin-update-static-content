@@ -59,10 +59,14 @@
   "configModal.cancel": "Cancel",
   "configModal.confirm": "Confirm",
 
+  "pagination.prev": "Previous",
+  "pagination.next": "Next",
+
   "button.seeMore": "See More",
   "button.refresh": "Refresh",
   "button.back": "Back",
   "button.save": "Save",
   "button.details": "Details",
   "confirm.message": "Do you confirm to trigger this action ?"
+  
 }

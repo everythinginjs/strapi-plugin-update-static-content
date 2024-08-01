@@ -28,6 +28,7 @@ import useFetch from '../../hooks/useFetch';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import pluginPermissions from '../../permissions';
 import pluginId from '../../pluginId';
+import { Pagination } from '../../components/Pagination';
 
 const THEAD_ITEMS = [
   'Run Number',
@@ -47,6 +48,7 @@ export default function ProtectedPage() {
 }
 
 type Data = {
+  total_count? : number;
   workflow_runs?: {
     id: number;
     conclusion: 'success' | 'failure';
@@ -77,15 +79,20 @@ function PluginPage() {
     `/${pluginId}/config`
   );
 
+  const [page, setPage] = useState(1);
+
   const [selectedWorkflow, setSelectedWorkflow] = useState<number>();
   const [data, isLoading, handleRefetch] = useFetch<Data>(
-    `/${pluginId}/github-actions-history/${selectedWorkflow || '0'}`
+    `/${pluginId}/github-actions-history/${selectedWorkflow || '0'}?page=${page}`
   );
 
-  const handleSelectWorkflow = (workflowId: number) => {
-    setSelectedWorkflow(workflowId);
+  const maxPerPage = 20;
+  const numberOfItems = data.total_count || 0
+
+  function handleSetPage(page: number) { 
+    setPage(page);
     handleRefetch();
-  };
+  }
 
   // Translations
   const TITLE = useFormattedLabel('plugin.title');
@@ -112,6 +119,20 @@ function PluginPage() {
   const [isConfirmOneDialogOpen, setIsConfirmOneDialogOpen] = useState<boolean>(false);
   const [isConfirmAllDialogOpen, setIsConfirmAllDialogOpen] = useState<boolean>(false);
 
+  // Callbacks
+
+  const handleSelectWorkflow = (workflowId: number) => {
+    setPage(1);
+    setSelectedWorkflow(workflowId);
+    handleRefetch();
+  };
+
+  async function triggerAllGithubActions() {
+    await post(`/${pluginId}/github-actions-trigger/all`);
+    handleRefetch();
+  }
+
+  
   function toggleConfirmOneDialog() {
     setIsConfirmOneDialogOpen((prev) => !prev);
   }
@@ -350,45 +371,48 @@ function PluginPage() {
               <PageLoading />
             </Flex>
           ) : (
-            <Table colCount={6} rowCount={21}>
-              <Thead>
-                <Tr>
-                  {THEAD_ITEMS.map((title, i) => (
-                    <Th key={i}>
-                      <Typography variant="sigma">{title}</Typography>
-                    </Th>
-                  ))}
-                </Tr>
-              </Thead>
-              <Tbody>
-                {data.workflow_runs.map(
-                  ({
-                    id,
-                    conclusion,
-                    name,
-                    run_number,
-                    run_started_at,
-                    html_url,
-                    updated_at,
-                    created_at,
-                  }) => {
-                    return (
-                      <CustomRow
-                        key={id}
-                        id={id}
-                        conclusion={conclusion}
-                        name={name}
-                        run_number={run_number}
-                        run_started_at={run_started_at}
-                        html_url={html_url}
-                        updated_at={updated_at}
-                        created_at={created_at}
-                      />
-                    );
-                  }
-                )}
-              </Tbody>
-            </Table>
+            <Flex gap={3} direction="column" alignItems="end">
+              <Table colCount={6} rowCount={21}>
+                <Thead>
+                  <Tr>
+                    {THEAD_ITEMS.map((title, i) => (
+                      <Th key={i}>
+                        <Typography variant="sigma">{title}</Typography>
+                      </Th>
+                    ))}
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {data.workflow_runs.map(
+                    ({
+                      id,
+                      conclusion,
+                      name,
+                      run_number,
+                      run_started_at,
+                      html_url,
+                      updated_at,
+                      created_at,
+                    }) => {
+                      return (
+                        <CustomRow
+                          key={id}
+                          id={id}
+                          conclusion={conclusion}
+                          name={name}
+                          run_number={run_number}
+                          run_started_at={run_started_at}
+                          html_url={html_url}
+                          updated_at={updated_at}
+                          created_at={created_at}
+                        />
+                      );
+                    }
+                  )}
+                </Tbody>
+              </Table>
+              <Pagination page={page} setPage={handleSetPage} numberOfItems={numberOfItems} maxPerPage={maxPerPage} />
+            </Flex>
           )}
         </Flex>
         <Flex width="100vw"></Flex>

@@ -4,7 +4,8 @@ import pluginId from '../../admin/src/pluginId';
 export default ({ strapi }: { strapi: Strapi }) => ({
   history: async (ctx) => {
     const { id } = ctx.params;
-    const response = await strapi.plugin(pluginId).service('githubActions').history(id);
+    const { page } = ctx.request.query;
+    const response = await strapi.plugin(pluginId).service('githubActions').history(id, page ?? 1);
     ctx.body = response.data;
   },
   trigger: async (ctx) => {

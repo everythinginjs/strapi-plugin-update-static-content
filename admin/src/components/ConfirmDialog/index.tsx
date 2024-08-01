@@ -1,10 +1,8 @@
 import { ConfirmDialog as StrapiConfirmDialog, ConfirmDialogProps } from '@strapi/helper-plugin';
 
 export function ConfirmDialog({
-  iconRightButton,
   onToggleDialog,
   onConfirm,
-  variantRightButton,
   ...props
 }: ConfirmDialogProps) {
   return (

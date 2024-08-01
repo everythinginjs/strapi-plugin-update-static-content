@@ -15,7 +15,7 @@ import {
   Layout,
 } from '@strapi/design-system';
 import { CheckPagePermissions, useFetchClient } from '@strapi/helper-plugin';
-import { ArrowLeft, Plus, Refresh } from '@strapi/icons';
+import { ArrowLeft, Check, Plus, Refresh } from '@strapi/icons';
 import React, { useState } from 'react';
 import CustomRow from '../../components/CustomRow';
 import PageWrapper from '../../components/PageWrapper';
@@ -26,6 +26,7 @@ import pluginPermissions from '../../permissions';
 import pluginId from '../../pluginId';
 import Config from '../../../../types/Config';
 import PageLoading from '../../components/PageLoading';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 
 const THEAD_ITEMS = [
   'Run Number',
@@ -109,11 +110,14 @@ function PluginPage() {
   const BACK_BUTTON = useFormattedLabel('button.back');
   const CONFIRM_MSG = useFormattedLabel('confirm.message');
 
+  const [isConfirmDialogOpen, setIsConformDialogOpen] = useState<boolean>(false);
+
+  function toggleConfirmDialog() {
+    setIsConformDialogOpen((prev) => !prev);
+  }
+
   // Callbacks
   async function triggerGithubActions() {
-    const isConfirmed = confirm(CONFIRM_MSG);
-
-    if (!isConfirmed) return;
 
     try {
       setLoadingTriggerButton(true);
@@ -199,8 +203,23 @@ function PluginPage() {
               >
                 {REFRESH_BUTTON}
               </Button>
+              <ConfirmDialog
+                bodyText={{
+                  id: 'confirm.message',
+                  defaultMessage: CONFIRM_MSG,
+                }}
+                title={{
+                  id: 'confirm.title',
+                  defaultMessage: 'Are you sure?',
+                }}
+                isOpen={isConfirmDialogOpen}
+                onToggleDialog={toggleConfirmDialog}
+                onConfirm={triggerGithubActions}
+                variantRightButton={'success-light'}
+                iconRightButton={<Check />}
+              />
               <Button
-                onClick={triggerGithubActions}
+                onClick={toggleConfirmDialog}
                 variant="default"
                 size="L"
                 loading={loadingTriggerButton}

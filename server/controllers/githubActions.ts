@@ -15,6 +15,10 @@ export default ({ strapi }: { strapi: Strapi }) => ({
     }
     ctx.body = response.data;
   },
+  triggerAll : async (ctx) => {
+    const response = await strapi.plugin(pluginId).service('githubActions').triggerAll();
+    ctx.body = response.data;
+  },
   log: async (ctx) => {
     const { id } = ctx.params;
     const { jobId } = ctx.request.query;

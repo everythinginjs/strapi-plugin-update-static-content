@@ -207,7 +207,6 @@ function PluginPage() {
             setToastToggle(false);
           }}
           variant="secondary"
-          size="L"
           loading={isLoading}
           startIcon={<Refresh />}
         >
@@ -234,22 +233,29 @@ function PluginPage() {
           <Button
             onClick={toggleConfirmOneDialog}
             variant="default"
-            size="L"
             loading={loadingTriggerButton}
             startIcon={<Plus />}
           >
             {PRIMARY_ACTION_BUTTON}
           </Button>
-          <Flex height="22px" width="1px" background="primary500">
+          <Flex height="15px" width="1px" background="primary500">
           </Flex>
           <Button
             label={useFormattedLabel('button.seeMore')}
-            size="L"
             onClick={HandleTogglePopover}
           >
             <More />
           </Button>
         </Flex>
+        {
+          popoverOpen && (
+            <Popover as={Flex} source={PopoverButton} onDismiss={HandleTogglePopover} padding={1}>
+                <Button variant = "ghost" onClick={toggleConfirmAllDialog}>
+                  {TRIGGER_ALL_WORKFLOWS_BUTTON}
+                </Button>
+            </Popover>
+          )
+        }
         <ConfirmDialog
           bodyText={{
             id: 'confirm.message',
@@ -265,15 +271,7 @@ function PluginPage() {
           variantRightButton={'success-light'}
           iconRightButton={<Check />}
         />
-        {
-          popoverOpen && (
-            <Popover as={Flex} source={PopoverButton} onDismiss={HandleTogglePopover} padding={1}>
-                <Button variant = "ghost" size="L" onClick={toggleConfirmAllDialog}>
-                  {TRIGGER_ALL_WORKFLOWS_BUTTON}
-                </Button>
-            </Popover>
-          )
-        }
+
       </Flex>
     );
   }

@@ -83,6 +83,22 @@ export default [
   },
   {
     method: 'POST',
+    path: '/github-actions-trigger/all',
+    handler: 'githubActions.triggerAll',
+    config: {
+      policies: [
+        'admin::isAuthenticatedAdmin',
+        {
+          name: 'admin::hasPermissions',
+          config: {
+            actions: [`plugin::${pluginId}.trigger`],
+          },
+        },
+      ],
+    },
+  },
+  {
+    method: 'POST',
     path: '/github-actions-trigger/:id',
     handler: 'githubActions.trigger',
     config: {

@@ -6,8 +6,7 @@ async function getConfig(id) {
   if (id === '0') {
     const config = await queryPluginConfig(strapi);
     return config[0];
-  }
-  else {
+  } else {
     return await queryPluginConfigId(strapi, id);
   }
 }
@@ -33,8 +32,11 @@ async function history(id: string) {
     );
     return res;
   } catch (err) {
-    console.log(err);
+    return {
+      status: err.response.status,
+      statusText: err.response.statusText,
   }
+}
 }
 
 async function trigger(id: string) {
@@ -61,6 +63,35 @@ async function trigger(id: string) {
       }
     );
     return res;
+  } catch (err) {
+    return {
+      status: err.response.status,
+      statusText: err.response.statusText,
+    };
+  }
+}
+
+async function triggerAll() {
+  try {
+    const configs = await queryPluginConfig(strapi);
+    return await Promise.all(
+      configs.map(async (config) => {
+        const { githubAccount, repo, workflow, branch, githubToken } = config;
+        return axios.post(
+          `https://api.github.com/repos/${githubAccount}/${repo}/actions/workflows/${workflow}/dispatches`,
+          {
+            ref: branch,
+            inputs: {},
+          },
+          {
+            headers: {
+              Accept: 'application/vnd.github+json',
+              Authorization: `token ${githubToken}`,
+            },
+          }
+        );
+      })
+    );
   } catch (err) {
     return {
       status: err.response.status,
@@ -98,4 +129,4 @@ async function getLogs(jobId: string, id: string) {
   }
 }
 
-export default { history, trigger, getLogs };
+export default { history, trigger, getLogs, triggerAll };

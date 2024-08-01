@@ -37,6 +37,7 @@
   
   "plugin.buttons.secondary": "Visit",
   "plugin.buttons.primary": "Trigger",
+  "plugin.buttons.triggerAllWorkflows": "Trigger All Workflows",
   "plugin.missingConfig.message": "Please, setup the following plugin configuration → ",
   "plugin.missingConfig.button": "Plugin Settings",
   

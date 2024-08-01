@@ -1,9 +1,11 @@
 import {
-  Flex,
   BaseHeaderLayout,
   Button,
-  LinkButton,
+  Flex,
+  Popover,
+  Layout,
   Link,
+  LinkButton,
   Table,
   Tbody,
   TextButton,
@@ -12,21 +14,20 @@ import {
   Tr,
   Typography,
   VisuallyHidden,
-  Layout,
 } from '@strapi/design-system';
 import { CheckPagePermissions, useFetchClient } from '@strapi/helper-plugin';
-import { ArrowLeft, Check, Plus, Refresh } from '@strapi/icons';
-import React, { useState } from 'react';
+import { ArrowLeft, Check, More, Plus, Refresh } from '@strapi/icons';
+import React, { useRef, useState } from 'react';
+import Config from '../../../../types/Config';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import CustomRow from '../../components/CustomRow';
+import PageLoading from '../../components/PageLoading';
 import PageWrapper from '../../components/PageWrapper';
 import ToastMsg from '../../components/ToastMsg';
 import useFetch from '../../hooks/useFetch';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import pluginPermissions from '../../permissions';
 import pluginId from '../../pluginId';
-import Config from '../../../../types/Config';
-import PageLoading from '../../components/PageLoading';
-import { ConfirmDialog } from '../../components/ConfirmDialog';
 
 const THEAD_ITEMS = [
   'Run Number',
@@ -71,7 +72,7 @@ function PluginPage() {
   const [loadingTriggerButton, setLoadingTriggerButton] = useState(false);
   const [toastMsg, setToastMsg] = useState<Toast>({} as Toast);
   const [toastToggle, setToastToggle] = useState(false);
-  const { post } = useFetchClient();
+  const { post, get } = useFetchClient();
   const [workflows, fetchingWorkflows, handleRefetchWorkflows] = useFetch<Config[]>(
     `/${pluginId}/config`
   );
@@ -90,7 +91,6 @@ function PluginPage() {
   const TITLE = useFormattedLabel('plugin.title');
   const HEADER_TITLE = useFormattedLabel('plugin.headers.title');
   const HEADER_SUBTITLE = useFormattedLabel('plugin.headers.subtitle');
-  const PRIMARY_ACTION_BUTTON = useFormattedLabel('plugin.buttons.primary');
   const TOAST_SUCCESS_TITLE = useFormattedLabel('plugin.toast.success.title');
   const TOAST_SUCCESS_DESCRIPTION = useFormattedLabel('plugin.toast.success.description');
   const TOAST_FAILURE_UNKNOWN_TITLE = useFormattedLabel('plugin.toast.failure.unknown.title');
@@ -108,17 +108,26 @@ function PluginPage() {
   const SEE_MORE_BUTTON = useFormattedLabel('button.seeMore');
   const REFRESH_BUTTON = useFormattedLabel('button.refresh');
   const BACK_BUTTON = useFormattedLabel('button.back');
-  const CONFIRM_MSG = useFormattedLabel('confirm.message');
 
-  const [isConfirmDialogOpen, setIsConformDialogOpen] = useState<boolean>(false);
+  const [isConfirmOneDialogOpen, setIsConfirmOneDialogOpen] = useState<boolean>(false);
+  const [isConfirmAllDialogOpen, setIsConfirmAllDialogOpen] = useState<boolean>(false);
 
-  function toggleConfirmDialog() {
-    setIsConformDialogOpen((prev) => !prev);
+  function toggleConfirmOneDialog() {
+    setIsConfirmOneDialogOpen((prev) => !prev);
+  }
+
+  function toggleConfirmAllDialog() {
+    setIsConfirmAllDialogOpen((prev) => !prev);
   }
 
   // Callbacks
-  async function triggerGithubActions() {
 
+  async function triggerAllGithubActions() {
+    await post(`/${pluginId}/github-actions-trigger/all`);
+    handleRefetch();
+  }
+
+  async function triggerGithubActions() {
     try {
       setLoadingTriggerButton(true);
       await post(`/${pluginId}/github-actions-trigger/${selectedWorkflow || '0'}`);
@@ -177,6 +186,96 @@ function PluginPage() {
     }
   }
 
+  function Actions() {
+    const PRIMARY_ACTION_BUTTON = useFormattedLabel('plugin.buttons.primary');
+    const TRIGGER_ALL_WORKFLOWS_BUTTON = useFormattedLabel('plugin.buttons.triggerAllWorkflows');
+
+    const CONFIRM_MSG = useFormattedLabel('confirm.message');
+
+    const [popoverOpen, setPopoverOpen] = useState(false);
+    const PopoverButton = useRef<HTMLButtonElement>(null);
+
+    function HandleTogglePopover() {
+      setPopoverOpen((prev) => !prev);
+    }
+
+    return (
+      <Flex gap={3}>
+        <Button
+          onClick={() => {
+            handleRefetch();
+            setToastToggle(false);
+          }}
+          variant="secondary"
+          size="L"
+          loading={isLoading}
+          startIcon={<Refresh />}
+        >
+          {REFRESH_BUTTON}
+        </Button>
+        <ConfirmDialog
+          bodyText={{
+            id: 'confirm.message',
+            defaultMessage: CONFIRM_MSG,
+          }}
+          title={{
+            id: 'confirm.title',
+            defaultMessage: 'Are you sure?',
+          }}
+          isOpen={isConfirmOneDialogOpen}
+          onToggleDialog={toggleConfirmOneDialog}
+          onConfirm={triggerGithubActions}
+          variantRightButton={'success-light'}
+          iconRightButton={<Check />}
+        />
+        <Flex background="buttonPrimary600" hasRadius 
+            ref={PopoverButton}
+        >
+          <Button
+            onClick={toggleConfirmOneDialog}
+            variant="default"
+            size="L"
+            loading={loadingTriggerButton}
+            startIcon={<Plus />}
+          >
+            {PRIMARY_ACTION_BUTTON}
+          </Button>
+          <Button
+            label={useFormattedLabel('button.seeMore')}
+            size="L"
+            onClick={HandleTogglePopover}
+          >
+            <More />
+          </Button>
+        </Flex>
+        <ConfirmDialog
+          bodyText={{
+            id: 'confirm.message',
+            defaultMessage: CONFIRM_MSG,
+          }}
+          title={{
+            id: 'confirm.title',
+            defaultMessage: 'Are you sure?',
+          }}
+          isOpen={isConfirmAllDialogOpen}
+          onToggleDialog={toggleConfirmAllDialog}
+          onConfirm={triggerAllGithubActions}
+          variantRightButton={'success-light'}
+          iconRightButton={<Check />}
+        />
+        {
+          popoverOpen && (
+            <Popover as={Flex} source={PopoverButton} onDismiss={HandleTogglePopover} padding={1}>
+                <Button variant = "ghost" size="L" onClick={toggleConfirmAllDialog}>
+                  {TRIGGER_ALL_WORKFLOWS_BUTTON}
+                </Button>
+            </Popover>
+          )
+        }
+      </Flex>
+    );
+  }
+
   return (
     <PageWrapper
       isLoading={fetchingWorkflows}
@@ -189,46 +288,7 @@ function PluginPage() {
               {BACK_BUTTON}
             </Link>
           }
-          primaryAction={
-            <Flex gap={3}>
-              <Button
-                onClick={() => {
-                  handleRefetch();
-                  setToastToggle(false);
-                }}
-                variant="secondary"
-                size="L"
-                loading={isLoading}
-                startIcon={<Refresh />}
-              >
-                {REFRESH_BUTTON}
-              </Button>
-              <ConfirmDialog
-                bodyText={{
-                  id: 'confirm.message',
-                  defaultMessage: CONFIRM_MSG,
-                }}
-                title={{
-                  id: 'confirm.title',
-                  defaultMessage: 'Are you sure?',
-                }}
-                isOpen={isConfirmDialogOpen}
-                onToggleDialog={toggleConfirmDialog}
-                onConfirm={triggerGithubActions}
-                variantRightButton={'success-light'}
-                iconRightButton={<Check />}
-              />
-              <Button
-                onClick={toggleConfirmDialog}
-                variant="default"
-                size="L"
-                loading={loadingTriggerButton}
-                startIcon={<Plus />}
-              >
-                {PRIMARY_ACTION_BUTTON}
-              </Button>
-            </Flex>
-          }
+          primaryAction={<Actions />}
         />
       }
       pageTitle={TITLE}
@@ -275,12 +335,18 @@ function PluginPage() {
                   </Button>
                 );
               })}
-              <LinkButton  to={`/settings/${pluginId}`} variant="ghost" size="L">
-                <Plus />
-              </LinkButton>
+            <LinkButton to={`/settings/${pluginId}`} variant="ghost" size="L">
+              <Plus />
+            </LinkButton>
           </Flex>
           {isLoading ? (
-            <Flex width="100%" justifyContent="center" alignItems="center" paddingTop="5em" paddingBottom="5em">
+            <Flex
+              width="100%"
+              justifyContent="center"
+              alignItems="center"
+              paddingTop="5em"
+              paddingBottom="5em"
+            >
               <PageLoading />
             </Flex>
           ) : (

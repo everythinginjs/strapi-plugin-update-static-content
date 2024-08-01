@@ -240,6 +240,8 @@ function PluginPage() {
           >
             {PRIMARY_ACTION_BUTTON}
           </Button>
+          <Flex height="22px" width="1px" background="primary500">
+          </Flex>
           <Button
             label={useFormattedLabel('button.seeMore')}
             size="L"
@@ -302,13 +304,10 @@ function PluginPage() {
             shadow="tableShadow"
             hasRadius
             border="1px solid"
-            // minWidth="15em"
-            // width="15em"
             padding={4}
             alignItems="start"
             overflowX="auto"
           >
-            {/* <h1>Workflows</h1> */}
             {!fetchingWorkflows &&
               workflows.map((workflow, index) => {
                 if (!selectedWorkflow) {

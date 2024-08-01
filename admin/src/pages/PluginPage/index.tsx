@@ -28,6 +28,7 @@ import useFetch from '../../hooks/useFetch';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import pluginPermissions from '../../permissions';
 import pluginId from '../../pluginId';
+import { Pagination } from '../../components/Pagination';
 
 const THEAD_ITEMS = [
   'Run Number',
@@ -47,6 +48,7 @@ export default function ProtectedPage() {
 }
 
 type Data = {
+  total_count? : number;
   workflow_runs?: {
     id: number;
     conclusion: 'success' | 'failure';
@@ -72,20 +74,25 @@ function PluginPage() {
   const [loadingTriggerButton, setLoadingTriggerButton] = useState(false);
   const [toastMsg, setToastMsg] = useState<Toast>({} as Toast);
   const [toastToggle, setToastToggle] = useState(false);
-  const { post, get } = useFetchClient();
+  const { post } = useFetchClient();
   const [workflows, fetchingWorkflows, handleRefetchWorkflows] = useFetch<Config[]>(
     `/${pluginId}/config`
   );
 
+  const [page, setPage] = useState(1);
+
   const [selectedWorkflow, setSelectedWorkflow] = useState<number>();
   const [data, isLoading, handleRefetch] = useFetch<Data>(
-    `/${pluginId}/github-actions-history/${selectedWorkflow || '0'}`
+    `/${pluginId}/github-actions-history/${selectedWorkflow || '0'}?page=${page}`
   );
 
-  const handleSelectWorkflow = (workflowId: number) => {
-    setSelectedWorkflow(workflowId);
+  const maxPerPage = 20;
+  const numberOfItems = data.total_count || 0
+
+  function handleSetPage(page: number) { 
+    setPage(page);
     handleRefetch();
-  };
+  }
 
   // Translations
   const TITLE = useFormattedLabel('plugin.title');
@@ -112,6 +119,20 @@ function PluginPage() {
   const [isConfirmOneDialogOpen, setIsConfirmOneDialogOpen] = useState<boolean>(false);
   const [isConfirmAllDialogOpen, setIsConfirmAllDialogOpen] = useState<boolean>(false);
 
+  // Callbacks
+
+  const handleSelectWorkflow = (workflowId: number) => {
+    setPage(1);
+    setSelectedWorkflow(workflowId);
+    handleRefetch();
+  };
+
+  async function triggerAllGithubActions() {
+    await post(`/${pluginId}/github-actions-trigger/all`);
+    handleRefetch();
+  }
+
+  
   function toggleConfirmOneDialog() {
     setIsConfirmOneDialogOpen((prev) => !prev);
   }
@@ -120,12 +141,6 @@ function PluginPage() {
     setIsConfirmAllDialogOpen((prev) => !prev);
   }
 
-  // Callbacks
-
-  async function triggerAllGithubActions() {
-    await post(`/${pluginId}/github-actions-trigger/all`);
-    handleRefetch();
-  }
 
   async function triggerGithubActions() {
     try {
@@ -227,9 +242,7 @@ function PluginPage() {
           variantRightButton={'success-light'}
           iconRightButton={<Check />}
         />
-        <Flex background="buttonPrimary600" hasRadius 
-            ref={PopoverButton}
-        >
+        <Flex background="buttonPrimary600" hasRadius ref={PopoverButton}>
           <Button
             onClick={toggleConfirmOneDialog}
             variant="default"
@@ -238,24 +251,18 @@ function PluginPage() {
           >
             {PRIMARY_ACTION_BUTTON}
           </Button>
-          <Flex height="15px" width="1px" background="primary500">
-          </Flex>
-          <Button
-            label={useFormattedLabel('button.seeMore')}
-            onClick={HandleTogglePopover}
-          >
+          <Flex height="15px" width="1px" background="primary500"></Flex>
+          <Button label={useFormattedLabel('button.seeMore')} onClick={HandleTogglePopover}>
             <More />
           </Button>
         </Flex>
-        {
-          popoverOpen && (
-            <Popover as={Flex} source={PopoverButton} onDismiss={HandleTogglePopover} padding={1}>
-                <Button variant = "ghost" onClick={toggleConfirmAllDialog}>
-                  {TRIGGER_ALL_WORKFLOWS_BUTTON}
-                </Button>
-            </Popover>
-          )
-        }
+        {popoverOpen && (
+          <Popover as={Flex} source={PopoverButton} onDismiss={HandleTogglePopover} padding={1}>
+            <Button variant="ghost" onClick={toggleConfirmAllDialog}>
+              {TRIGGER_ALL_WORKFLOWS_BUTTON}
+            </Button>
+          </Popover>
+        )}
         <ConfirmDialog
           bodyText={{
             id: 'confirm.message',
@@ -271,7 +278,6 @@ function PluginPage() {
           variantRightButton={'success-light'}
           iconRightButton={<Check />}
         />
-
       </Flex>
     );
   }
@@ -347,45 +353,48 @@ function PluginPage() {
               <PageLoading />
             </Flex>
           ) : (
-            <Table colCount={6} rowCount={21}>
-              <Thead>
-                <Tr>
-                  {THEAD_ITEMS.map((title, i) => (
-                    <Th key={i}>
-                      <Typography variant="sigma">{title}</Typography>
-                    </Th>
-                  ))}
-                </Tr>
-              </Thead>
-              <Tbody>
-                {data.workflow_runs?.map(
-                  ({
-                    id,
-                    conclusion,
-                    name,
-                    run_number,
-                    run_started_at,
-                    html_url,
-                    updated_at,
-                    created_at,
-                  }) => {
-                    return (
-                      <CustomRow
-                        key={id}
-                        id={id}
-                        conclusion={conclusion}
-                        name={name}
-                        run_number={run_number}
-                        run_started_at={run_started_at}
-                        html_url={html_url}
-                        updated_at={updated_at}
-                        created_at={created_at}
-                      />
-                    );
-                  }
-                )}
-              </Tbody>
-            </Table>
+            <Flex gap={3} direction="column" alignItems="end">
+              <Table colCount={6} rowCount={21}>
+                <Thead>
+                  <Tr>
+                    {THEAD_ITEMS.map((title, i) => (
+                      <Th key={i}>
+                        <Typography variant="sigma">{title}</Typography>
+                      </Th>
+                    ))}
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {data.workflow_runs?.map(
+                    ({
+                      id,
+                      conclusion,
+                      name,
+                      run_number,
+                      run_started_at,
+                      html_url,
+                      updated_at,
+                      created_at,
+                    }) => {
+                      return (
+                        <CustomRow
+                          key={id}
+                          id={id}
+                          conclusion={conclusion}
+                          name={name}
+                          run_number={run_number}
+                          run_started_at={run_started_at}
+                          html_url={html_url}
+                          updated_at={updated_at}
+                          created_at={created_at}
+                        />
+                      );
+                    }
+                  )}
+                </Tbody>
+              </Table>
+              <Pagination page={page} setPage={handleSetPage} numberOfItems={numberOfItems} maxPerPage={maxPerPage} />
+            </Flex>
           )}
         </Flex>
         <Flex width="100vw"></Flex>

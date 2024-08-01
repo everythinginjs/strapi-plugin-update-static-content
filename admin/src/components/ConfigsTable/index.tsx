@@ -97,11 +97,9 @@ export default function ConfigsTable() {
                             defaultMessage: useFormattedLabel('settings.table.confirmDelete.confirm')
                           }
                         }
-                        iconRightButton={<Check />}
                         isOpen={isConfirmDialogOpen}
                         onToggleDialog={toggleConfirmDialog}
                         onConfirm={() => handleDetete(`${config.id}`)}
-                        variantRightButton="success-light"
                       />
                       <IconButton onClick={toggleConfirmDialog} label="Delete" borderWidth={0}>
                         <Trash />

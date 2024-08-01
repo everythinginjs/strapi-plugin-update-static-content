@@ -14,7 +14,6 @@ import {
   Tr,
   Typography,
   VisuallyHidden,
-  Layout,
 } from '@strapi/design-system';
 import { CheckPagePermissions, useFetchClient } from '@strapi/helper-plugin';
 import { ArrowLeft, Check, More, Plus, Refresh } from '@strapi/icons';
@@ -29,7 +28,6 @@ import useFetch from '../../hooks/useFetch';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import pluginPermissions from '../../permissions';
 import pluginId from '../../pluginId';
-import { useNotification } from '@strapi/helper-plugin';
 
 const THEAD_ITEMS = [
   'Run Number',

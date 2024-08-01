@@ -14,24 +14,20 @@ import {
   Layout,
 } from '@strapi/design-system';
 import { Plus, Trash } from '@strapi/icons';
+import { useState } from 'react';
 import { getFetchClient } from '@strapi/helper-plugin';
 import { Link } from 'react-router-dom';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import PageLoading from '../PageLoading';
 import useFetch from '../../hooks/useFetch';
 
-const toggleConfirmDialog = () => {
-  setIsConformDialogOpen((prev) => !prev);
-};
 
 export default function ConfigsTable() {
   const [data, isDataLoading, refetchData] = useFetch<Config[]>(`/${pluginId}/config`);
   const { del } = getFetchClient();
 
-  console.log(data, isDataLoading);
-
-  const CONFIRM_DELETE_TITLE = useFormattedLabel('settings.table.confirmDelete.title');
-  const CONFIRM_DELETE = useFormattedLabel('settings.table.confirmDelete.confirm');
+  const [isConfirmDialogOpen, setIsConformDialogOpen] = useState<boolean>(false);
+  const CONFIRM_DELETE_MESSAGE = useFormattedLabel('settings.table.confirmDelete.message');
 
   async function handleDetete(id: string) {
     const deleteConfirm = await del(`/${pluginId}/config/${id}`);
@@ -45,6 +41,10 @@ export default function ConfigsTable() {
     }
   }
 
+
+  const toggleConfirmDialog = () => {
+    setIsConformDialogOpen((prev) => !prev);
+  };
 
   const COL_COUNT = 4;
 
@@ -98,9 +98,11 @@ export default function ConfigsTable() {
                             defaultMessage: useFormattedLabel('settings.table.confirmDelete.confirm')
                           }
                         }
+                        iconRightButton={<Check />}
                         isOpen={isConfirmDialogOpen}
                         onToggleDialog={toggleConfirmDialog}
                         onConfirm={() => handleDetete(`${config.id}`)}
+                        variantRightButton="success-light"
                       />
                       <IconButton onClick={toggleConfirmDialog} label="Delete" borderWidth={0}>
                         <Trash />

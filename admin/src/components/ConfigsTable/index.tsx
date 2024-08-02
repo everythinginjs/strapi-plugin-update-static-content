@@ -11,7 +11,7 @@ import {
   Flex,
   Box,
   IconButton,
-  Main
+  Main,
 } from '@strapi/design-system';
 import { Plus, Trash } from '@strapi/icons';
 import { useMemo, useState } from 'react';
@@ -67,19 +67,21 @@ export default function ConfigsTable() {
   const FooterButton = () => {
     const FOOTER_LABEL = useFormattedLabel('settings.table.footer.label');
     return (
-      <Link to={(location) => ({ ...location, pathname: `${location.pathname}/new-workflow` })}>
-        <TFooter icon={<Plus />}>{FOOTER_LABEL}</TFooter>
-      </Link>
+      <TFooter
+        as={Link}
+        to={(location) => ({ ...location, pathname: `${location.pathname}/new-workflow` })}
+        style={{ textDecoration: 'none' }}
+        icon={<Plus />}
+      >
+        {FOOTER_LABEL}
+      </TFooter>
     );
   };
 
   return isLoading ? (
     <PageLoading />
   ) : (
-      <Main
-        width="100%"
-      >
-
+    <Main width="100%">
       <Table colCount={COL_COUNT} footer={<FooterButton />}>
         <Thead>
           <Tr>
@@ -109,14 +111,12 @@ export default function ConfigsTable() {
                         }}
                         title={{
                           id: 'settings.table.confirmDelete.title',
-                          defaultMessage: useFormattedLabel('settings.table.confirmDelete.title')}
-                        }
-                        rightButtonText={
-                          {
-                            id: 'settings.table.confirmDelete.confirm',
-                            defaultMessage: useFormattedLabel('settings.table.confirmDelete.confirm')
-                          }
-                        }
+                          defaultMessage: useFormattedLabel('settings.table.confirmDelete.title'),
+                        }}
+                        rightButtonText={{
+                          id: 'settings.table.confirmDelete.confirm',
+                          defaultMessage: useFormattedLabel('settings.table.confirmDelete.confirm'),
+                        }}
                         isOpen={isConfirmDialogOpen}
                         onToggleDialog={toggleConfirmDialog}
                         onConfirm={() => handleDetete(`${config.id}`)}
@@ -131,8 +131,6 @@ export default function ConfigsTable() {
             ))}
         </Tbody>
       </Table>
-
-      </Main>
-
+    </Main>
   );
 }

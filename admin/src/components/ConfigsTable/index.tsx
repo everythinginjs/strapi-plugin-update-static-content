@@ -11,9 +11,9 @@ import {
   Flex,
   Box,
   IconButton,
-  Layout,
+  Main
 } from '@strapi/design-system';
-import { Check, Plus, Trash } from '@strapi/icons';
+import { Plus, Trash } from '@strapi/icons';
 import { useMemo, useState } from 'react';
 import { getFetchClient } from '@strapi/helper-plugin';
 import { Link } from 'react-router-dom';
@@ -76,7 +76,10 @@ export default function ConfigsTable() {
   return isLoading ? (
     <PageLoading />
   ) : (
-    <Layout>
+      <Main
+        width="100%"
+      >
+
       <Table colCount={COL_COUNT} footer={<FooterButton />}>
         <Thead>
           <Tr>
@@ -128,6 +131,8 @@ export default function ConfigsTable() {
             ))}
         </Tbody>
       </Table>
-    </Layout>
+
+      </Main>
+
   );
 }

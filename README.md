@@ -27,6 +27,7 @@ Plugin Page
 ## Features
 
 - Workflow History
+- Trigger multiple workflows
 - Config Page
 - Downloading Logs
 - Roles to access the plugin

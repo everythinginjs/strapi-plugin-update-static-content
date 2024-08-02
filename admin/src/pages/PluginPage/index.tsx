@@ -14,6 +14,7 @@ import {
   Tr,
   Typography,
   VisuallyHidden,
+  Box,
 } from '@strapi/design-system';
 import { CheckPagePermissions, useFetchClient } from '@strapi/helper-plugin';
 import { ArrowLeft, Check, More, Plus, Refresh } from '@strapi/icons';
@@ -48,7 +49,7 @@ export default function ProtectedPage() {
 }
 
 type Data = {
-  total_count? : number;
+  total_count?: number;
   workflow_runs?: {
     id: number;
     conclusion: 'success' | 'failure';
@@ -87,9 +88,9 @@ function PluginPage() {
   );
 
   const maxPerPage = 20;
-  const numberOfItems = data.total_count || 0
+  const numberOfItems = data.total_count || 0;
 
-  function handleSetPage(page: number) { 
+  function handleSetPage(page: number) {
     setPage(page);
     handleRefetch();
   }
@@ -132,7 +133,6 @@ function PluginPage() {
     handleRefetch();
   }
 
-  
   function toggleConfirmOneDialog() {
     setIsConfirmOneDialogOpen((prev) => !prev);
   }
@@ -301,24 +301,24 @@ function PluginPage() {
   }
 
   return (
-    <PageWrapper
-      isLoading={isWorkflowsFetching}
-      baseHeaderLayout={
-        <BaseHeaderLayout
-          title={HEADER_TITLE}
-          subtitle={HEADER_SUBTITLE}
-          navigationAction={
-            <Link to="/" startIcon={<ArrowLeft />}>
-              {BACK_BUTTON}
-            </Link>
-          }
-          primaryAction={<Actions />}
-        />
-      }
-      pageTitle={TITLE}
-    >
-      {toastToggle && <ToastMsg {...toastMsg} closeToastHandler={() => setToastToggle(false)} />}
-      <Layout>
+    <Layout>
+      <PageWrapper
+        isLoading={isWorkflowsFetching}
+        baseHeaderLayout={
+          <BaseHeaderLayout
+            title={HEADER_TITLE}
+            subtitle={HEADER_SUBTITLE}
+            navigationAction={
+              <Link to="/" startIcon={<ArrowLeft />}>
+                {BACK_BUTTON}
+              </Link>
+            }
+            primaryAction={<Actions />}
+          />
+        }
+        pageTitle={TITLE}
+      >
+        {toastToggle && <ToastMsg {...toastMsg} closeToastHandler={() => setToastToggle(false)} />}
         <Flex gap={3} alignItems="start" width="100%" overflowX="auto" direction="column">
           <Flex
             gap={3}
@@ -360,63 +360,71 @@ function PluginPage() {
               <Plus />
             </LinkButton>
           </Flex>
-          {isLoading || !data.workflow_runs ? (
-            <Flex
-              width="100%"
-              justifyContent="center"
-              alignItems="center"
-              paddingTop="5em"
-              paddingBottom="5em"
-            >
-              <PageLoading />
-            </Flex>
-          ) : (
-            <Flex gap={3} direction="column" alignItems="end">
-              <Table colCount={6} rowCount={21}>
-                <Thead>
-                  <Tr>
-                    {THEAD_ITEMS.map((title, i) => (
-                      <Th key={i}>
-                        <Typography variant="sigma">{title}</Typography>
-                      </Th>
-                    ))}
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {data.workflow_runs.map(
-                    ({
-                      id,
-                      conclusion,
-                      name,
-                      run_number,
-                      run_started_at,
-                      html_url,
-                      updated_at,
-                      created_at,
-                    }) => {
-                      return (
-                        <CustomRow
-                          key={id}
-                          id={id}
-                          conclusion={conclusion}
-                          name={name}
-                          run_number={run_number}
-                          run_started_at={run_started_at}
-                          html_url={html_url}
-                          updated_at={updated_at}
-                          created_at={created_at}
-                        />
-                      );
-                    }
-                  )}
-                </Tbody>
-              </Table>
-              <Pagination page={page} setPage={handleSetPage} numberOfItems={numberOfItems} maxPerPage={maxPerPage} />
-            </Flex>
-          )}
+          <Box width="100%">
+            {isLoading || !data.workflow_runs ? (
+              <Flex
+                width="100%"
+                justifyContent="center"
+                alignItems="center"
+                paddingTop="5em"
+                paddingBottom="5em"
+              >
+                <PageLoading />
+              </Flex>
+            ) : (
+              <>
+                <Table colCount={6} rowCount={21}>
+                  <Thead>
+                    <Tr>
+                      {THEAD_ITEMS.map((title, i) => (
+                        <Th key={i}>
+                          <Typography variant="sigma">{title}</Typography>
+                        </Th>
+                      ))}
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {data.workflow_runs.map(
+                      ({
+                        id,
+                        conclusion,
+                        name,
+                        run_number,
+                        run_started_at,
+                        html_url,
+                        updated_at,
+                        created_at,
+                      }) => {
+                        return (
+                          <CustomRow
+                            key={id}
+                            id={id}
+                            conclusion={conclusion}
+                            name={name}
+                            run_number={run_number}
+                            run_started_at={run_started_at}
+                            html_url={html_url}
+                            updated_at={updated_at}
+                            created_at={created_at}
+                          />
+                        );
+                      }
+                    )}
+                  </Tbody>
+                </Table>
+              <Flex marginTop={3}direction="column" alignItems="end" width="100%">
+                <Pagination
+                  page={page}
+                  setPage={handleSetPage}
+                  numberOfItems={numberOfItems}
+                  maxPerPage={maxPerPage}
+                />
+              </Flex>
+              </>
+            )}
+          </Box>
         </Flex>
-        <Flex width="100vw"></Flex>
-      </Layout>
-    </PageWrapper>
+      </PageWrapper>
+    </Layout>
   );
 }

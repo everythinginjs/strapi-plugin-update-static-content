@@ -89,6 +89,12 @@ jobs:
           fing --access-token "${TOKEN}" up --app vahoora-gatsby --dispatch
 ```
 
+
+5. Create a GitHub Personal Access Token on Github : [https://github.com/settings/tokens](https://github.com/settings/tokens)
+   > See more on the [Github Documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+
+6. Then, you can add the workflow in the plugin settings from the admin panel, save and you'll be able to trigger your workflows from strapi.
+
 ## Usage 
 
 1. Add the workflow in the plugin's settings `admin/settings/update-static-content`

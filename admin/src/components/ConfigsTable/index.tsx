@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import PageLoading from '../PageLoading';
 import useFetch from '../../hooks/useFetch';
+import { ConfirmDialog } from '../ConfirmDialog';
 
 
 export default function ConfigsTable() {
@@ -104,7 +105,6 @@ export default function ConfigsTable() {
                         isOpen={isConfirmDialogOpen}
                         onToggleDialog={toggleConfirmDialog}
                         onConfirm={() => handleDetete(`${config.id}`)}
-                        variantRightButton="success-light"
                       />
                       <IconButton onClick={toggleConfirmDialog} label="Delete" borderWidth={0}>
                         <Trash />

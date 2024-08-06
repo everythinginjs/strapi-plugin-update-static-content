@@ -28,6 +28,7 @@ import useFetch from '../../hooks/useFetch';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import pluginPermissions from '../../permissions';
 import pluginId from '../../pluginId';
+import { useNotification } from '@strapi/helper-plugin';
 
 const THEAD_ITEMS = [
   'Run Number',
@@ -123,8 +124,20 @@ function PluginPage() {
   // Callbacks
 
   async function triggerAllGithubActions() {
-    await post(`/${pluginId}/github-actions-trigger/all`);
-    handleRefetch();
+    try {
+      await post(`/${pluginId}/github-actions-trigger/all`);
+      handleRefetch();
+    } catch (error: any) {
+      console.error(error);
+      console.error("coucou");
+      setToastMsg({
+        variant: 'danger',
+        title: TOAST_FAILURE_UNKNOWN_TITLE,
+        message: TOAST_FAILURE_UNKNOWN_DESCRIPTION,
+      });
+      setToastToggle(true);
+      return;
+    }
   }
 
   async function triggerGithubActions() {
@@ -227,9 +240,7 @@ function PluginPage() {
           variantRightButton={'success-light'}
           iconRightButton={<Check />}
         />
-        <Flex background="buttonPrimary600" hasRadius 
-            ref={PopoverButton}
-        >
+        <Flex background="buttonPrimary600" hasRadius ref={PopoverButton}>
           <Button
             onClick={toggleConfirmOneDialog}
             variant="default"
@@ -238,24 +249,18 @@ function PluginPage() {
           >
             {PRIMARY_ACTION_BUTTON}
           </Button>
-          <Flex height="15px" width="1px" background="primary500">
-          </Flex>
-          <Button
-            label={useFormattedLabel('button.seeMore')}
-            onClick={HandleTogglePopover}
-          >
+          <Flex height="15px" width="1px" background="primary500"></Flex>
+          <Button label={useFormattedLabel('button.seeMore')} onClick={HandleTogglePopover}>
             <More />
           </Button>
         </Flex>
-        {
-          isPopoverOpen && (
-            <Popover as={Flex} source={PopoverButton} onDismiss={HandleTogglePopover} padding={1}>
-                <Button variant = "ghost" onClick={toggleConfirmAllDialog}>
-                  {TRIGGER_ALL_WORKFLOWS_BUTTON}
-                </Button>
-            </Popover>
-          )
-        }
+        {isPopoverOpen && (
+          <Popover as={Flex} source={PopoverButton} onDismiss={HandleTogglePopover} padding={1}>
+            <Button variant="ghost" onClick={toggleConfirmAllDialog}>
+              {TRIGGER_ALL_WORKFLOWS_BUTTON}
+            </Button>
+          </Popover>
+        )}
         <ConfirmDialog
           bodyText={{
             id: 'confirm.message',
@@ -271,7 +276,6 @@ function PluginPage() {
           variantRightButton={'success-light'}
           iconRightButton={<Check />}
         />
-
       </Flex>
     );
   }

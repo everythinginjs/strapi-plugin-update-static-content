@@ -3,9 +3,10 @@ import axios from 'axios';
 
 async function getConfig(id) {
   // if the id is 0, it means the user is trying to get the first config
-  if (id === '0') {
+  const DEFAULT_CONFIG = 0
+  if (id === `${DEFAULT_CONFIG}`) {
     const config = await queryPluginConfig(strapi);
-    return config[0];
+    return config[DEFAULT_CONFIG];
   } else {
     return await queryPluginConfigId(strapi, id);
   }

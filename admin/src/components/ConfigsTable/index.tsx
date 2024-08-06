@@ -20,6 +20,10 @@ import useFormattedLabel from '../../hooks/useFormattedLabel';
 import PageLoading from '../PageLoading';
 import useFetch from '../../hooks/useFetch';
 
+const toggleConfirmDialog = () => {
+  setIsConformDialogOpen((prev) => !prev);
+};
+
 export default function ConfigsTable() {
   const [data, isDataLoading, refetchData] = useFetch<Config[]>(`/${pluginId}/config`);
   const { del } = getFetchClient();
@@ -41,9 +45,6 @@ export default function ConfigsTable() {
     }
   }
 
-  const toggleConfirmDialog = () => {
-    setIsConformDialogOpen((prev) => !prev);
-  };
 
   const COL_COUNT = 4;
 

@@ -27,7 +27,7 @@ export default function PageWrapper({ children, baseHeaderLayout, pageTitle, isL
         width="100%"
         overflow="auto"
       >
-        {isLoading ? <PageLoading /> : <>{children}</>}
+        {isLoading ? <PageLoading /> : children}
       </Flex>
     </>
   );

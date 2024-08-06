@@ -72,8 +72,8 @@ function PluginPage() {
   const [loadingTriggerButton, setLoadingTriggerButton] = useState(false);
   const [toastMsg, setToastMsg] = useState<Toast>({} as Toast);
   const [toastToggle, setToastToggle] = useState(false);
-  const { post, get } = useFetchClient();
-  const [workflows, fetchingWorkflows, handleRefetchWorkflows] = useFetch<Config[]>(
+  const { post } = useFetchClient();
+  const [workflows, isWorkflowsFetching, handleRefetchWorkflows] = useFetch<Config[]>(
     `/${pluginId}/config`
   );
 
@@ -192,11 +192,11 @@ function PluginPage() {
 
     const CONFIRM_MSG = useFormattedLabel('confirm.message');
 
-    const [popoverOpen, setPopoverOpen] = useState(false);
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     const PopoverButton = useRef<HTMLButtonElement>(null);
 
     function HandleTogglePopover() {
-      setPopoverOpen((prev) => !prev);
+      setIsPopoverOpen((prev) => !prev);
     }
 
     return (
@@ -248,7 +248,7 @@ function PluginPage() {
           </Button>
         </Flex>
         {
-          popoverOpen && (
+          isPopoverOpen && (
             <Popover as={Flex} source={PopoverButton} onDismiss={HandleTogglePopover} padding={1}>
                 <Button variant = "ghost" onClick={toggleConfirmAllDialog}>
                   {TRIGGER_ALL_WORKFLOWS_BUTTON}
@@ -278,7 +278,7 @@ function PluginPage() {
 
   return (
     <PageWrapper
-      isLoading={fetchingWorkflows}
+      isLoading={isWorkflowsFetching}
       baseHeaderLayout={
         <BaseHeaderLayout
           title={HEADER_TITLE}
@@ -306,7 +306,7 @@ function PluginPage() {
             alignItems="start"
             overflowX="auto"
           >
-            {!fetchingWorkflows &&
+            {!isWorkflowsFetching &&
               workflows.map((workflow, index) => {
                 if (!selectedWorkflow) {
                   setSelectedWorkflow(workflows[0].id ?? index);
@@ -316,7 +316,7 @@ function PluginPage() {
                     onClick={() => handleSelectWorkflow(workflow.id ?? index)}
                     variant={selectedWorkflow === workflow.id ? 'primary' : 'ghost'}
                     size="L"
-                    loading={fetchingWorkflows}
+                    loading={isWorkflowsFetching}
                     width="100%"
                     key={workflow.id ?? index}
                   >
@@ -336,7 +336,7 @@ function PluginPage() {
               <Plus />
             </LinkButton>
           </Flex>
-          {isLoading ? (
+          {isLoading || !data.workflow_runs ? (
             <Flex
               width="100%"
               justifyContent="center"
@@ -358,7 +358,7 @@ function PluginPage() {
                 </Tr>
               </Thead>
               <Tbody>
-                {data.workflow_runs?.map(
+                {data.workflow_runs.map(
                   ({
                     id,
                     conclusion,

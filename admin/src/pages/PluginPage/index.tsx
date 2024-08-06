@@ -128,11 +128,6 @@ function PluginPage() {
     handleRefetch();
   };
 
-  async function triggerAllGithubActions() {
-    await post(`/${pluginId}/github-actions-trigger/all`);
-    handleRefetch();
-  }
-
   function toggleConfirmOneDialog() {
     setIsConfirmOneDialogOpen((prev) => !prev);
   }

@@ -59,6 +59,7 @@ export default function AddNewWorkflow() {
       pageTitle={PAGE_TITLE}
     >
       <form
+        style={{ width: '100%' }}
         onSubmit={async (e) => {
           e.preventDefault();
           if (githubToken && githubAccount && repo && workflow && branch) {

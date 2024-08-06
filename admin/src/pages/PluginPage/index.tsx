@@ -1,8 +1,11 @@
 import {
-  Flex,
   BaseHeaderLayout,
   Button,
+  Flex,
+  Popover,
+  Layout,
   Link,
+  LinkButton,
   Table,
   Tbody,
   TextButton,
@@ -13,15 +16,19 @@ import {
   VisuallyHidden,
 } from '@strapi/design-system';
 import { CheckPagePermissions, useFetchClient } from '@strapi/helper-plugin';
-import { ArrowLeft, Plus, Refresh } from '@strapi/icons';
-import React, { useState } from 'react';
+import { ArrowLeft, Check, More, Plus, Refresh } from '@strapi/icons';
+import React, { useRef, useState } from 'react';
+import Config from '../../../../types/Config';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import CustomRow from '../../components/CustomRow';
+import PageLoading from '../../components/PageLoading';
 import PageWrapper from '../../components/PageWrapper';
 import ToastMsg from '../../components/ToastMsg';
 import useFetch from '../../hooks/useFetch';
 import useFormattedLabel from '../../hooks/useFormattedLabel';
 import pluginPermissions from '../../permissions';
 import pluginId from '../../pluginId';
+import { useNotification } from '@strapi/helper-plugin';
 
 const THEAD_ITEMS = [
   'Run Number',
@@ -67,13 +74,24 @@ function PluginPage() {
   const [toastMsg, setToastMsg] = useState<Toast>({} as Toast);
   const [toastToggle, setToastToggle] = useState(false);
   const { post } = useFetchClient();
-  const [data, isLoading, handleRefetch] = useFetch<Data>(`/${pluginId}/github-actions-history`);
+  const [workflows, isWorkflowsFetching, handleRefetchWorkflows] = useFetch<Config[]>(
+    `/${pluginId}/config`
+  );
+
+  const [selectedWorkflow, setSelectedWorkflow] = useState<number>();
+  const [data, isLoading, handleRefetch] = useFetch<Data>(
+    `/${pluginId}/github-actions-history/${selectedWorkflow || '0'}`
+  );
+
+  const handleSelectWorkflow = (workflowId: number) => {
+    setSelectedWorkflow(workflowId);
+    handleRefetch();
+  };
 
   // Translations
   const TITLE = useFormattedLabel('plugin.title');
   const HEADER_TITLE = useFormattedLabel('plugin.headers.title');
   const HEADER_SUBTITLE = useFormattedLabel('plugin.headers.subtitle');
-  const PRIMARY_ACTION_BUTTON = useFormattedLabel('plugin.buttons.primary');
   const TOAST_SUCCESS_TITLE = useFormattedLabel('plugin.toast.success.title');
   const TOAST_SUCCESS_DESCRIPTION = useFormattedLabel('plugin.toast.success.description');
   const TOAST_FAILURE_UNKNOWN_TITLE = useFormattedLabel('plugin.toast.failure.unknown.title');
@@ -91,17 +109,41 @@ function PluginPage() {
   const SEE_MORE_BUTTON = useFormattedLabel('button.seeMore');
   const REFRESH_BUTTON = useFormattedLabel('button.refresh');
   const BACK_BUTTON = useFormattedLabel('button.back');
-  const CONFIRM_MSG = useFormattedLabel('confirm.message');
+
+  const [isConfirmOneDialogOpen, setIsConfirmOneDialogOpen] = useState<boolean>(false);
+  const [isConfirmAllDialogOpen, setIsConfirmAllDialogOpen] = useState<boolean>(false);
+
+  function toggleConfirmOneDialog() {
+    setIsConfirmOneDialogOpen((prev) => !prev);
+  }
+
+  function toggleConfirmAllDialog() {
+    setIsConfirmAllDialogOpen((prev) => !prev);
+  }
 
   // Callbacks
+
+  async function triggerAllGithubActions() {
+    try {
+      await post(`/${pluginId}/github-actions-trigger/all`);
+      handleRefetch();
+    } catch (error: any) {
+      console.error(error);
+      console.error("coucou");
+      setToastMsg({
+        variant: 'danger',
+        title: TOAST_FAILURE_UNKNOWN_TITLE,
+        message: TOAST_FAILURE_UNKNOWN_DESCRIPTION,
+      });
+      setToastToggle(true);
+      return;
+    }
+  }
+
   async function triggerGithubActions() {
-    const isConfirmed = confirm(CONFIRM_MSG);
-
-    if (!isConfirmed) return;
-
     try {
       setLoadingTriggerButton(true);
-      await post(`/${pluginId}/github-actions-trigger`);
+      await post(`/${pluginId}/github-actions-trigger/${selectedWorkflow || '0'}`);
       setToastMsg({
         variant: 'success',
         title: TOAST_SUCCESS_TITLE,
@@ -129,9 +171,7 @@ function PluginPage() {
           title: TOAST_FAILURE_UNPROCESSABLE_TITLE,
           message: TOAST_FAILURE_UNPROCESSABLE_DESCRIPTION,
           action: (
-            <Link
-              href="https://docs.github.com/en/actions/managing-workflow-runs/disabling-and-enabling-a-workflow"
-            >
+            <Link href="https://docs.github.com/en/actions/managing-workflow-runs/disabling-and-enabling-a-workflow">
               {SEE_MORE_BUTTON}
             </Link>
           ),
@@ -159,9 +199,90 @@ function PluginPage() {
     }
   }
 
+  function Actions() {
+    const PRIMARY_ACTION_BUTTON = useFormattedLabel('plugin.buttons.primary');
+    const TRIGGER_ALL_WORKFLOWS_BUTTON = useFormattedLabel('plugin.buttons.triggerAllWorkflows');
+
+    const CONFIRM_MSG = useFormattedLabel('confirm.message');
+
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const PopoverButton = useRef<HTMLButtonElement>(null);
+
+    function HandleTogglePopover() {
+      setIsPopoverOpen((prev) => !prev);
+    }
+
+    return (
+      <Flex gap={3}>
+        <Button
+          onClick={() => {
+            handleRefetch();
+            setToastToggle(false);
+          }}
+          variant="secondary"
+          loading={isLoading}
+          startIcon={<Refresh />}
+        >
+          {REFRESH_BUTTON}
+        </Button>
+        <ConfirmDialog
+          bodyText={{
+            id: 'confirm.message',
+            defaultMessage: CONFIRM_MSG,
+          }}
+          title={{
+            id: 'confirm.title',
+            defaultMessage: 'Are you sure?',
+          }}
+          isOpen={isConfirmOneDialogOpen}
+          onToggleDialog={toggleConfirmOneDialog}
+          onConfirm={triggerGithubActions}
+          variantRightButton={'success-light'}
+          iconRightButton={<Check />}
+        />
+        <Flex background="buttonPrimary600" hasRadius ref={PopoverButton}>
+          <Button
+            onClick={toggleConfirmOneDialog}
+            variant="default"
+            loading={loadingTriggerButton}
+            startIcon={<Plus />}
+          >
+            {PRIMARY_ACTION_BUTTON}
+          </Button>
+          <Flex height="15px" width="1px" background="primary500"></Flex>
+          <Button label={useFormattedLabel('button.seeMore')} onClick={HandleTogglePopover}>
+            <More />
+          </Button>
+        </Flex>
+        {isPopoverOpen && (
+          <Popover as={Flex} source={PopoverButton} onDismiss={HandleTogglePopover} padding={1}>
+            <Button variant="ghost" onClick={toggleConfirmAllDialog}>
+              {TRIGGER_ALL_WORKFLOWS_BUTTON}
+            </Button>
+          </Popover>
+        )}
+        <ConfirmDialog
+          bodyText={{
+            id: 'confirm.message',
+            defaultMessage: CONFIRM_MSG,
+          }}
+          title={{
+            id: 'confirm.title',
+            defaultMessage: 'Are you sure?',
+          }}
+          isOpen={isConfirmAllDialogOpen}
+          onToggleDialog={toggleConfirmAllDialog}
+          onConfirm={triggerAllGithubActions}
+          variantRightButton={'success-light'}
+          iconRightButton={<Check />}
+        />
+      </Flex>
+    );
+  }
+
   return (
     <PageWrapper
-      isLoading={isLoading}
+      isLoading={isWorkflowsFetching}
       baseHeaderLayout={
         <BaseHeaderLayout
           title={HEADER_TITLE}
@@ -171,75 +292,108 @@ function PluginPage() {
               {BACK_BUTTON}
             </Link>
           }
-          primaryAction={
-            <Flex gap={3}>
-               <Button
-                onClick={() => {
-                  handleRefetch();
-                  setToastToggle(false);
-                }}
-                variant="secondary"
-                size="L"
-                loading={isLoading}
-                startIcon={<Refresh />}
-              >
-                {REFRESH_BUTTON}
-              </Button>
-              <Button
-                onClick={triggerGithubActions}
-                variant="default"
-                size="L"
-                loading={loadingTriggerButton}
-                startIcon={<Plus />}
-              >
-                {PRIMARY_ACTION_BUTTON}
-              </Button>
-            </Flex>
-          }
+          primaryAction={<Actions />}
         />
       }
       pageTitle={TITLE}
     >
       {toastToggle && <ToastMsg {...toastMsg} closeToastHandler={() => setToastToggle(false)} />}
-      <Table colCount={6} rowCount={21}>
-        <Thead>
-          <Tr>
-            {THEAD_ITEMS.map((title, i) => (
-              <Th key={i}>
-                <Typography variant="sigma">{title}</Typography>
-              </Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.workflow_runs?.map(
-            ({
-              id,
-              conclusion,
-              name,
-              run_number,
-              run_started_at,
-              html_url,
-              updated_at,
-              created_at,
-            }) => {
-              return (
-                <CustomRow
-                  key={id}
-                  id={id}
-                  conclusion={conclusion}
-                  name={name}
-                  run_number={run_number}
-                  run_started_at={run_started_at}
-                  html_url={html_url}
-                  updated_at={updated_at}
-                  created_at={created_at}
-                />
-              );
-            }
+      <Layout>
+        <Flex gap={3} alignItems="start" width="100%" overflowX="auto" direction="column">
+          <Flex
+            gap={3}
+            background="neutral0"
+            shadow="tableShadow"
+            hasRadius
+            border="1px solid"
+            padding={4}
+            alignItems="start"
+            overflowX="auto"
+          >
+            {!isWorkflowsFetching &&
+              workflows.map((workflow, index) => {
+                if (!selectedWorkflow) {
+                  setSelectedWorkflow(workflows[0].id ?? index);
+                }
+                return (
+                  <Button
+                    onClick={() => handleSelectWorkflow(workflow.id ?? index)}
+                    variant={selectedWorkflow === workflow.id ? 'primary' : 'ghost'}
+                    size="L"
+                    loading={isWorkflowsFetching}
+                    width="100%"
+                    key={workflow.id ?? index}
+                  >
+                    <p
+                      style={{
+                        width: '100%',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {workflow.workflow}
+                    </p>
+                  </Button>
+                );
+              })}
+            <LinkButton to={`/settings/${pluginId}`} variant="ghost" size="L">
+              <Plus />
+            </LinkButton>
+          </Flex>
+          {isLoading || !data.workflow_runs ? (
+            <Flex
+              width="100%"
+              justifyContent="center"
+              alignItems="center"
+              paddingTop="5em"
+              paddingBottom="5em"
+            >
+              <PageLoading />
+            </Flex>
+          ) : (
+            <Table colCount={6} rowCount={21}>
+              <Thead>
+                <Tr>
+                  {THEAD_ITEMS.map((title, i) => (
+                    <Th key={i}>
+                      <Typography variant="sigma">{title}</Typography>
+                    </Th>
+                  ))}
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.workflow_runs.map(
+                  ({
+                    id,
+                    conclusion,
+                    name,
+                    run_number,
+                    run_started_at,
+                    html_url,
+                    updated_at,
+                    created_at,
+                  }) => {
+                    return (
+                      <CustomRow
+                        key={id}
+                        id={id}
+                        conclusion={conclusion}
+                        name={name}
+                        run_number={run_number}
+                        run_started_at={run_started_at}
+                        html_url={html_url}
+                        updated_at={updated_at}
+                        created_at={created_at}
+                      />
+                    );
+                  }
+                )}
+              </Tbody>
+            </Table>
           )}
-        </Tbody>
-      </Table>
+        </Flex>
+        <Flex width="100vw"></Flex>
+      </Layout>
     </PageWrapper>
   );
 }

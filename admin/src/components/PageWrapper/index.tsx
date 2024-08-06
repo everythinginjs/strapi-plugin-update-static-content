@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@strapi/design-system';
+import { Flex } from '@strapi/design-system';
 import { SettingsPageTitle } from '@strapi/helper-plugin';
 import PageLoading from '../PageLoading';
 
@@ -18,14 +18,17 @@ export default function PageWrapper({ children, baseHeaderLayout, pageTitle, isL
     <>
       <SettingsPageTitle name={pageTitle} />
       {baseHeaderLayout}
-      <Box
+      <Flex
+        direction="column"
         paddingRight={PADDING_X}
         paddingLeft={PADDING_X}
         paddingTop={PADDING_Y}
         paddingBottom={PADDING_Y}
+        width="100%"
+        overflow="auto"
       >
-        {isLoading ? <PageLoading /> : <>{children}</>}
-      </Box>
+        {isLoading ? <PageLoading /> : children}
+      </Flex>
     </>
   );
 }
